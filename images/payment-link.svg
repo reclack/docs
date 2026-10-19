@@ -10,8 +10,6 @@
       .big { font-size: 15px; font-weight: 600; fill: #16151f; }
       .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
       .note { font-size: 11.5px; fill: #6f6b85; }
-      .mono { font-size: 11.5px; fill: #16151f; }
-      .monom { font-size: 11.5px; fill: #6f6b85; }
       .rail { stroke: #e2def2; stroke-width: 2; }
       .dot { fill: #533afd; }
       .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
@@ -35,7 +33,7 @@
     <circle cx="529" cy="57" r="4" fill="#f0eefa"/>
     <circle cx="542" cy="57" r="4" fill="#f0eefa"/>
     <text class="t" x="562" y="61" font-size="11.5" fill="#8a86a3">Premium Research Access</text>
-    <text class="t" x="528" y="112" font-size="22" font-weight="600" fill="#16151f">25.00 USDC</text>
+    <text class="t" x="528" y="112" font-size="22" font-weight="600" fill=P["ink"]>25.00 USDC</text>
     <text class="note" x="528" y="134">One-time payment</text>
     <line x1="520" y1="152" x2="820" y2="152" stroke="#e2def2" stroke-width="1.5"/>
     <rect x="528" y="168" width="284" height="26" rx="8" fill="#f8f7fc"/>

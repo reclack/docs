@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 390" width="880" height="390" role="img" aria-label="What your customer sees in the portal">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c8496"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #eef1f5; }
+      .big { font-size: 15px; font-weight: 600; fill: #eef1f5; }
+      .who { font-size: 11px; fill: #7d8495; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #a4abba; }
+      .rail { stroke: #252b35; stroke-width: 2; }
+      .dot { fill: #8f7dff; }
+      .edge { stroke: #39404d; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="390" fill="#0b0d11"/>
+  <g class="t">
+    <rect x="180" y="20" width="520" height="348" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <path d="M180,54 h520" stroke="#252b35" stroke-width="1.5"/>
+    <circle cx="196" cy="37" r="4" fill="#2a303b"/>
+    <circle cx="209" cy="37" r="4" fill="#2a303b"/>
+    <circle cx="222" cy="37" r="4" fill="#2a303b"/>
+    <text class="t" x="242" y="41" font-size="11.5" fill="#7d8495">portal.reclack.com</text>
+    <text class="who" x="212" y="82">ACME LABS</text>
+    <text class="note" x="668" y="82" text-anchor="end">Signed in with 0x71A4…29F2</text>
+    <line x1="212" y1="96" x2="668" y2="96" stroke="#252b35" stroke-width="1.5"/>
+    <rect x="212" y="116" width="456" height="104" rx="12" fill="#171a21" stroke="#252b35" stroke-width="1.5"/>
+    <text class="big" x="236" y="150">Pro Plan</text>
+    <text class="note" x="236" y="172">29.00 USDC monthly</text>
+    <text class="note" x="236" y="192">Renews Nov 18 on Base</text>
+    <rect x="588" y="134" width="54.6" height="21" rx="10.5" fill="#13301e"/>
+    <text class="t" x="597" y="148.5" font-size="11" fill="#4ade80" font-weight="600">Active</text>
+    <rect x="560" y="174" width="85.1" height="21" rx="10.5" fill="#14171d"/>
+    <text class="t" x="569" y="188.5" font-size="11" fill="#a4abba" font-weight="600">Cancel plan</text>
+    <rect x="560" y="174" width="80" height="21" rx="10.5" fill="none" stroke="#252b35" stroke-width="1.5"/>
+    <text class="who" x="212" y="252">INVOICES</text>
+    <text class="note" x="212" y="274" font-size="10.5" fill="#7d8495">Invoice</text>
+    <text class="note" x="380" y="274" font-size="10.5" fill="#7d8495">Date</text>
+    <text class="note" x="560" y="274" text-anchor="end" font-size="10.5" fill="#7d8495">Amount</text>
+    <text class="note" x="668" y="274" text-anchor="end" font-size="10.5" fill="#7d8495">Status</text>
+    <line x1="212" y1="284" x2="668" y2="284" stroke="#252b35" stroke-width="1.5"/>
+    <text class="m" x="212" y="306" font-size="11.5" fill="#eef1f5">INV-00182</text>
+    <text class="note" x="380" y="306">Oct 18</text>
+    <text class="m" x="560" y="306" text-anchor="end" font-size="11.5" fill="#a4abba">29.00 USDC</text>
+    <text class="t" x="668" y="306" text-anchor="end" font-size="11" fill="#4ade80" font-weight="600">Paid</text>
+    <line x1="212" y1="316" x2="668" y2="316" stroke="#252b35" stroke-width="1.5"/>
+    <text class="m" x="212" y="332" font-size="11.5" fill="#eef1f5">INV-00164</text>
+    <text class="note" x="380" y="332">Sep 18</text>
+    <text class="m" x="560" y="332" text-anchor="end" font-size="11.5" fill="#a4abba">29.00 USDC</text>
+    <text class="t" x="668" y="332" text-anchor="end" font-size="11" fill="#4ade80" font-weight="600">Paid</text>
+    <line x1="212" y1="342" x2="668" y2="342" stroke="#252b35" stroke-width="1.5"/>
+    <text class="m" x="212" y="358" font-size="11.5" fill="#eef1f5">INV-00151</text>
+    <text class="note" x="380" y="358">Aug 18</text>
+    <text class="m" x="560" y="358" text-anchor="end" font-size="11.5" fill="#a4abba">29.00 USDC</text>
+    <text class="t" x="668" y="358" text-anchor="end" font-size="11" fill="#4ade80" font-weight="600">Paid</text>
+  </g>
+</svg>

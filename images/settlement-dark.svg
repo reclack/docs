@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-label="Payments settle to the address you registered for each network">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c8496"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #eef1f5; }
+      .big { font-size: 15px; font-weight: 600; fill: #eef1f5; }
+      .who { font-size: 11px; fill: #7d8495; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #a4abba; }
+      .rail { stroke: #252b35; stroke-width: 2; }
+      .dot { fill: #8f7dff; }
+      .edge { stroke: #39404d; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="300" fill="#0b0d11"/>
+  <g class="t">
+    <text class="who" x="40" y="68">PAYERS</text>
+    <rect x="40" y="90" width="190" height="34" rx="10" fill="#1a1e26"/>
+    <text class="m" x="58" y="112" font-size="11.5" fill="#a4abba">0x71A4…29F2</text>
+    <path class="edge" d="M238,107 L300,124"/>
+    <rect x="40" y="136" width="190" height="34" rx="10" fill="#1a1e26"/>
+    <text class="m" x="58" y="158" font-size="11.5" fill="#a4abba">0x9b32…4De1</text>
+    <path class="edge" d="M238,153 L300,150"/>
+    <rect x="40" y="182" width="190" height="34" rx="10" fill="#1a1e26"/>
+    <text class="m" x="58" y="204" font-size="11.5" fill="#a4abba">0xC104…88aa</text>
+    <path class="edge" d="M238,199 L300,176"/>
+    <rect x="310" y="96" width="220" height="110" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <g transform="translate(334,114) scale(0.2600)"><rect width="100" height="100" rx="14" fill="#8f7dff"/><g transform="translate(18.50,24.61) scale(0.7) translate(-5,-13.72)"><path d="m 5,13.72 0,72.551 85.408,0 c 2.544,0 4.592,-2.048 4.592,-4.592 l 0,-23.418 -16.531,0 c -4.579,0 -8.265,-3.686 -8.265,-8.265 0,-4.579 3.686,-8.265 8.265,-8.265 l 16.531,0 0,-23.418 c 0,-2.544 -2.048,-4.592 -4.592,-4.592 z m 75.469,29.847 c -3.55,0 -6.429,2.878 -6.429,6.429 0,3.55 2.878,6.429 6.429,6.429 3.55,0 6.429,-2.878 6.429,-6.429 0,-3.551 -2.878,-6.429 -6.429,-6.429 z" fill="#0b0d11"/></g></g>
+    <text class="big" x="371" y="133">Reclack</text>
+    <text class="note" x="334" y="164">Routes and records.</text>
+    <text class="note" x="334" y="184">Holds nothing.</text>
+    <text class="who" x="610" y="68">YOUR ADDRESSES</text>
+    <rect x="610" y="90" width="230" height="34" rx="10" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="t" x="628" y="112" font-size="11.5" fill="#eef1f5" font-weight="600">Base</text>
+    <text class="m" x="822" y="112" text-anchor="end" font-size="11" fill="#a4abba">0x71B9…4921</text>
+    <path class="edge" d="M538,124 L600,107"/>
+    <rect x="610" y="136" width="230" height="34" rx="10" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="t" x="628" y="158" font-size="11.5" fill="#eef1f5" font-weight="600">Ethereum</text>
+    <text class="m" x="822" y="158" text-anchor="end" font-size="11" fill="#a4abba">0x4c2A…7081</text>
+    <path class="edge" d="M538,150 L600,153"/>
+    <rect x="610" y="182" width="230" height="34" rx="10" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="t" x="628" y="204" font-size="11.5" fill="#eef1f5" font-weight="600">Polygon</text>
+    <text class="m" x="822" y="204" text-anchor="end" font-size="11" fill="#a4abba">0x8f3c…b3c4</text>
+    <path class="edge" d="M538,176 L600,199"/>
+    <text class="note" x="440" y="272" text-anchor="middle">Check a settlement address character by character. Funds sent to the wrong one cannot be recovered.</text>
+  </g>
+</svg>

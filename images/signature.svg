@@ -10,8 +10,6 @@
       .big { font-size: 15px; font-weight: 600; fill: #16151f; }
       .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
       .note { font-size: 11.5px; fill: #6f6b85; }
-      .mono { font-size: 11.5px; fill: #16151f; }
-      .monom { font-size: 11.5px; fill: #6f6b85; }
       .rail { stroke: #e2def2; stroke-width: 2; }
       .dot { fill: #533afd; }
       .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }

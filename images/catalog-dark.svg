@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 326" width="880" height="326" role="img" aria-label="A product carrying several prices">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c8496"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #eef1f5; }
+      .big { font-size: 15px; font-weight: 600; fill: #eef1f5; }
+      .who { font-size: 11px; fill: #7d8495; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #a4abba; }
+      .rail { stroke: #252b35; stroke-width: 2; }
+      .dot { fill: #8f7dff; }
+      .edge { stroke: #39404d; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="326" fill="#0b0d11"/>
+  <g class="t">
+    <rect x="40" y="50" width="300" height="130" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="big" x="64" y="84">Pro Plan</text>
+    <text class="m" x="64" y="106" font-size="11.5" fill="#a4abba">prod_2Pb8xk9</text>
+    <text class="note" x="64" y="134">Everything in Starter, plus</text>
+    <text class="note" x="64" y="152">priority support</text>
+    <rect x="460" y="50" width="380" height="66" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="ttl" x="486" y="80">29.00 USDC</text>
+    <text class="note" x="486" y="100">monthly · Base</text>
+    <rect x="740" y="72" width="54.6" height="21" rx="10.5" fill="#13301e"/>
+    <text class="t" x="749" y="86.5" font-size="11" fill="#4ade80" font-weight="600">Active</text>
+    <path class="edge" d="M348,115 L452,83"/>
+    <rect x="460" y="132" width="380" height="66" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="ttl" x="486" y="162">290.00 USDC</text>
+    <text class="note" x="486" y="182">yearly · Base</text>
+    <rect x="740" y="154" width="54.6" height="21" rx="10.5" fill="#13301e"/>
+    <text class="t" x="749" y="168.5" font-size="11" fill="#4ade80" font-weight="600">Active</text>
+    <path class="edge" d="M348,115 L452,165"/>
+    <rect x="460" y="214" width="380" height="66" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="ttl" x="486" y="244">29.00 USDC</text>
+    <text class="note" x="486" y="264">monthly · Ethereum</text>
+    <rect x="740" y="236" width="48.5" height="21" rx="10.5" fill="#1f242e"/>
+    <text class="t" x="749" y="250.5" font-size="11" fill="#7d8495" font-weight="600">Draft</text>
+    <path class="edge" d="M348,115 L452,247"/>
+    <text class="note" x="440" y="306" text-anchor="middle">One product, as many prices as you need. A price is what a subscription is approved against.</text>
+  </g>
+</svg>

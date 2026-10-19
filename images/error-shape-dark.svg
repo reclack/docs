@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-label="The shape of an error response">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c8496"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #eef1f5; }
+      .big { font-size: 15px; font-weight: 600; fill: #eef1f5; }
+      .who { font-size: 11px; fill: #7d8495; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #a4abba; }
+      .rail { stroke: #252b35; stroke-width: 2; }
+      .dot { fill: #8f7dff; }
+      .edge { stroke: #39404d; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="300" fill="#0b0d11"/>
+  <g class="t">
+    <rect x="40" y="50" width="420" height="210" rx="12" fill="#171a21" stroke="#252b35" stroke-width="1.5"/>
+    <text class="m" x="64" y="80" font-size="12" fill="#fbbf24" font-weight="600">HTTP 400</text>
+    <text class="m" x="64" y="110" font-size="11.5" fill="#eef1f5">{</text>
+    <text class="m" x="64" y="129" font-size="11.5" fill="#eef1f5">  "error": {</text>
+    <text class="m" x="64" y="148" font-size="11.5" fill="#8f7dff">    "type": "invalid_request_error",</text>
+    <text class="m" x="64" y="167" font-size="11.5" fill="#eef1f5">    "code": "price_not_found",</text>
+    <text class="m" x="64" y="186" font-size="11.5" fill="#a4abba">    "message": "No price was found for that id"</text>
+    <text class="m" x="64" y="205" font-size="11.5" fill="#eef1f5">  }</text>
+    <text class="m" x="64" y="224" font-size="11.5" fill="#eef1f5">}</text>
+    <rect x="500" y="50" width="340" height="210" rx="12" fill="#14171d" stroke="#252b35" stroke-width="1.5"/>
+    <text class="who" x="524" y="80">WHAT THE TYPE TELLS YOU</text>
+    <text class="m" x="524" y="108" font-size="11.5" fill="#8f7dff">invalid_request_error</text>
+    <text class="note" x="524" y="124">Fix the call</text>
+    <text class="m" x="524" y="146" font-size="11.5" fill="#8f7dff">authentication_error</text>
+    <text class="note" x="524" y="162">Check the key</text>
+    <text class="m" x="524" y="184" font-size="11.5" fill="#8f7dff">permission_error</text>
+    <text class="note" x="524" y="200">Widen the key</text>
+    <text class="m" x="524" y="222" font-size="11.5" fill="#8f7dff">api_error</text>
+    <text class="note" x="524" y="238">Retry, then write to us</text>
+  </g>
+</svg>

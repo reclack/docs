@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" width="880" height="240" role="img" aria-label="A checkout from creation to settlement">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7c8496"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .step { font-size: 13.5px; font-weight: 600; fill: #eef1f5; }
+      .who { font-size: 11px; fill: #7d8495; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #a4abba; }
+      .rail { stroke: #252b35; stroke-width: 2; }
+      .dot { fill: #8f7dff; }
+      .edge { stroke: #39404d; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="240" fill="#0b0d11"/>
+  <g class="t">
+    <line class="rail" x1="60" y1="96" x2="820" y2="96"/>
+
+    <circle class="dot" cx="80" cy="96" r="6"/>
+    <text class="who" x="60" y="66">YOUR SERVER</text>
+    <text class="step" x="60" y="132">Create session</text>
+    <text class="note" x="60" y="152">POST /v1/checkouts</text>
+    <text class="note" x="60" y="170">Returns a url</text>
+
+    <circle class="dot" cx="270" cy="96" r="6"/>
+    <text class="who" x="250" y="66">PAYER</text>
+    <text class="step" x="250" y="132">Opens the page</text>
+    <text class="note" x="250" y="152">Picks a wallet</text>
+    <text class="note" x="250" y="170">and a network</text>
+
+    <circle class="dot" cx="460" cy="96" r="6"/>
+    <text class="who" x="440" y="66">WALLET</text>
+    <text class="step" x="440" y="132">Signs the approval</text>
+    <text class="note" x="440" y="152">A bounded cap, then</text>
+    <text class="note" x="440" y="170">today's payment</text>
+
+    <circle class="dot" cx="650" cy="96" r="6"/>
+    <text class="who" x="630" y="66">CHAIN</text>
+    <text class="step" x="630" y="132">Confirms</text>
+    <text class="note" x="630" y="152">Followed until it is</text>
+    <text class="note" x="630" y="170">final, then recorded</text>
+
+    <circle class="dot" cx="820" cy="96" r="6"/>
+    <text class="who" x="742" y="66">YOUR SERVER</text>
+    <text class="step" x="742" y="132">Gets the events</text>
+    <text class="note" x="742" y="152">checkout.completed</text>
+    <text class="note" x="742" y="170">payment.succeeded</text>
+  </g>
+</svg>
