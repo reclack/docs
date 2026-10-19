@@ -1,0 +1,126 @@
+---
+title: "Webhooks"
+description: "Signed events for every state change, with retries and replay."
+---
+
+Billing happens while nobody is looking. A period opens at midnight, a
+collection confirms three blocks later, a retry succeeds on day six. Webhooks
+are how your application hears about all of it without polling.
+
+## Setting up an endpoint
+
+Create one in the dashboard under **Developers**, then **Webhooks**, or through
+the API:
+
+```bash
+curl -X POST "https://api.reclack.com/v1/webhooks" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://acme.dev/hooks/reclack",
+    "event_types": ["subscription.renewed", "invoice.paid", "payment.failed"]
+  }'
+```
+
+The response includes a signing secret, shown once. Store it where your service
+can read it and nowhere else.
+
+```json
+{
+  "data": {
+    "id": "whe_7Fh2PqX9",
+    "url": "https://acme.dev/hooks/reclack",
+    "status": "active",
+    "secret": "whsec_9f1c4a2b8e7d0356",
+    "event_types": ["subscription.renewed", "invoice.paid", "payment.failed"]
+  }
+}
+```
+
+<Warning>
+The secret is shown once, at creation. If you lose it, roll it with
+`POST /v1/webhooks/{id}/secret` and update your service.
+</Warning>
+
+## What a delivery looks like
+
+```http
+POST /hooks/reclack HTTP/1.1
+Host: acme.dev
+Content-Type: application/json
+Reclack-Event: evt_4Kd9ZmPq
+Reclack-Signature: t=1792447200,v1=5d41402abc4b2a76b9719d911017c592
+
+{
+  "id": "evt_4Kd9ZmPq",
+  "type": "subscription.renewed",
+  "created_at": "2026-10-18T22:07:41Z",
+  "data": {
+    "id": "sub_4Kd9",
+    "customer_id": "cus_7Fh2PqX9",
+    "amount": "29.00",
+    "currency": "USDC",
+    "network": "base",
+    "next_charge_at": "2026-11-18T22:07:41Z"
+  }
+}
+```
+
+| Header | Carries |
+| --- | --- |
+| `Reclack-Signature` | A timestamp and an HMAC over the body. See [Verifying](/webhooks/verifying). |
+| `Reclack-Event` | The event id, so you can deduplicate without parsing the body. |
+
+## Responding
+
+Return `2xx` quickly. Anything else counts as a failure and the delivery is
+retried.
+
+```js
+app.post("/hooks/reclack", async (req, res) => {
+  // Verify first, acknowledge second, work third.
+  if (!verify(req)) return res.status(400).end();
+
+  await queue.push(req.body);   // do the slow part elsewhere
+  res.status(200).end();        // acknowledge within a few seconds
+});
+```
+
+<Tip>
+Acknowledge before you do the work. A handler that provisions an account, sends
+an email and writes to three tables before replying is a handler that will time
+out and receive the same event again.
+</Tip>
+
+## Retries
+
+| Behaviour | Detail |
+| --- | --- |
+| Attempts | Up to six, spaced out rather than immediate |
+| Counts as failure | Any non-`2xx`, a timeout, or a connection error |
+| Response bodies | Captured and kept, so you can see what your endpoint said |
+| After repeated failures | The endpoint pauses, and the dashboard says so |
+
+A paused endpoint is not a deleted one. Fix the handler, resume it, and replay
+the deliveries you missed.
+
+## Replaying
+
+Every delivery is visible in the dashboard with its request, its response and
+its timing. Replay one from there, or through the API:
+
+```bash
+curl -X POST "https://api.reclack.com/v1/webhook-deliveries/whd_8Qd3/retry" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+A bad deploy should not cost you a day of events.
+
+## Before your endpoint exists
+
+The events are stored either way. List them while you are still building:
+
+```bash
+curl "https://api.reclack.com/v1/events?limit=20" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```

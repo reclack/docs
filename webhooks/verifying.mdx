@@ -1,0 +1,162 @@
+---
+title: "Verifying webhooks"
+description: "Check the signature before you trust a single field."
+---
+
+Your webhook URL is reachable by anyone who learns it. The signature is what
+tells you a call came from Reclack and that the body was not altered on the
+way.
+
+## The header
+
+```
+Reclack-Signature: t=1792447200,v1=5d41402abc4b2a76b9719d911017c592
+```
+
+| Part | Meaning |
+| --- | --- |
+| `t` | The Unix timestamp at which the call was signed. |
+| `v1` | HMAC-SHA256 over `"<t>.<raw body>"`, keyed by your endpoint secret, hex encoded. |
+
+The timestamp is inside the signed string on purpose. Without it, a captured
+call could be replayed forever, and a receiver checking the age would have no
+way to know the age itself had not been tampered with.
+
+## Verifying it
+
+<CodeGroup>
+
+```js Node
+import crypto from "node:crypto";
+
+export function verify(rawBody, header, secret, toleranceSeconds = 300) {
+  const parts = Object.fromEntries(
+    header.split(",").map((part) => part.split("=")),
+  );
+
+  const timestamp = Number(parts.t);
+  if (!timestamp) return false;
+
+  // Reject anything too old or too far in the future.
+  const age = Math.abs(Date.now() / 1000 - timestamp);
+  if (age > toleranceSeconds) return false;
+
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(`${timestamp}.${rawBody}`)
+    .digest("hex");
+
+  // Constant time: a byte-by-byte compare leaks how much of a guess was right.
+  return crypto.timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(parts.v1 ?? ""),
+  );
+}
+```
+
+```go Go
+func Verify(secret string, body []byte, header string, tolerance time.Duration) bool {
+	var stamp int64
+	var provided string
+	if _, err := fmt.Sscanf(header, "t=%d,v1=%s", &stamp, &provided); err != nil {
+		return false
+	}
+
+	signedAt := time.Unix(stamp, 0).UTC()
+	if time.Since(signedAt) > tolerance {
+		return false
+	}
+
+	mac := hmac.New(sha256.New, []byte(secret))
+	fmt.Fprintf(mac, "%d.", stamp)
+	mac.Write(body)
+	expected := hex.EncodeToString(mac.Sum(nil))
+
+	return hmac.Equal([]byte(expected), []byte(provided))
+}
+```
+
+```python Python
+import hashlib, hmac, time
+
+def verify(raw_body: bytes, header: str, secret: str, tolerance: int = 300) -> bool:
+    parts = dict(part.split("=", 1) for part in header.split(","))
+    timestamp = int(parts.get("t", 0))
+    if not timestamp or abs(time.time() - timestamp) > tolerance:
+        return False
+
+    expected = hmac.new(
+        secret.encode(),
+        f"{timestamp}.".encode() + raw_body,
+        hashlib.sha256,
+    ).hexdigest()
+
+    return hmac.compare_digest(expected, parts.get("v1", ""))
+```
+
+</CodeGroup>
+
+<Warning>
+Verify against the raw request body, exactly as it arrived. Parsing the JSON
+and re-serialising it changes whitespace and key order, and the signature will
+not match.
+</Warning>
+
+In Express, that means reading the body as a buffer for this route:
+
+```js
+app.post(
+  "/hooks/reclack",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const ok = verify(
+      req.body.toString("utf8"),
+      req.get("Reclack-Signature"),
+      process.env.RECLACK_WEBHOOK_SECRET,
+    );
+    if (!ok) return res.status(400).end();
+
+    const event = JSON.parse(req.body.toString("utf8"));
+    // ...
+    res.status(200).end();
+  },
+);
+```
+
+## Deduplicating
+
+The same event can arrive twice. A retry after a timeout is the common case:
+your handler did the work, your reply never made it back.
+
+Use the event id, which is also in the `Reclack-Event` header:
+
+```js
+const seen = await db.events.findUnique({ where: { id: event.id } });
+if (seen) return res.status(200).end();
+
+await db.events.create({ data: { id: event.id } });
+await handle(event);
+```
+
+## A complete handler
+
+```js
+app.post(
+  "/hooks/reclack",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+    const raw = req.body.toString("utf8");
+
+    if (!verify(raw, req.get("Reclack-Signature"), process.env.RECLACK_WEBHOOK_SECRET)) {
+      return res.status(400).end();
+    }
+
+    const event = JSON.parse(raw);
+
+    if (await alreadyHandled(event.id)) return res.status(200).end();
+
+    await enqueue(event);     // slow work happens elsewhere
+    res.status(200).end();    // acknowledge now
+  },
+);
+```

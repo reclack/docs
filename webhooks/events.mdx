@@ -1,0 +1,78 @@
+---
+title: "Event types"
+description: "Everything Reclack emits, and what each one means."
+---
+
+Event types read as `object.what_happened`, in the past tense, because an event
+is a record of something that already happened. The strings are part of the
+contract: they are added to, never renamed.
+
+## Payments
+
+| Type | Fires when | Act on it by |
+| --- | --- | --- |
+| `payment.succeeded` | A transaction confirmed onchain. | Marking the payment settled in your records. |
+| `payment.failed` | A collection attempt failed. | Noting it. Retries are already scheduled. |
+
+## Invoices
+
+| Type | Fires when | Act on it by |
+| --- | --- | --- |
+| `invoice.paid` | An invoice was reconciled against a confirmed transaction. | Closing the bill in your books. |
+| `invoice.overdue` | The due date passed with the invoice still open. | Reaching out, or letting the reminders do it. |
+
+## Subscriptions
+
+| Type | Fires when | Act on it by |
+| --- | --- | --- |
+| `subscription.created` | A recurring checkout completed. | Granting access. |
+| `subscription.renewed` | A period collected and reconciled. | Extending access to the next period. |
+| `subscription.cancelled` | The customer or you ended it. | Ending access when the period runs out. |
+
+## Checkout
+
+| Type | Fires when | Act on it by |
+| --- | --- | --- |
+| `checkout.completed` | A session was paid. | Fulfilling whatever the session was for. |
+
+## Customers
+
+| Type | Fires when | Act on it by |
+| --- | --- | --- |
+| `customer.created` | A new customer record was made, including by a payer at checkout. | Linking it to your own user, usually through `external_id` or the email. |
+
+## Subscribing
+
+An endpoint subscribes to the types it wants. Subscribing to a type that will
+never fire is a configuration that produces silence, so we refuse unknown types
+at the form rather than letting you discover it months later.
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/webhooks/whe_7Fh2PqX9" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event_types": [
+      "subscription.created",
+      "subscription.renewed",
+      "subscription.cancelled",
+      "invoice.paid",
+      "payment.failed"
+    ]
+  }'
+```
+
+The current list is also available from the API, which is handy for building a
+settings screen:
+
+```bash
+curl "https://api.reclack.com/v1/event-types" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+## A note on ordering
+
+Events are not guaranteed to arrive in the order they happened. A retry can
+land after a later event. Treat each one as a statement about an object at a
+point in time, and read the object back if the order matters to what you do
+next.
