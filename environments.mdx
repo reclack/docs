@@ -1,0 +1,71 @@
+---
+title: "Environments"
+description: "Sandbox and live, what differs between them, and how to move over."
+---
+
+Reclack has two environments. They share one API host, one set of endpoints and
+one object model. The key you present decides which one you are in.
+
+| | Sandbox | Live |
+| --- | --- | --- |
+| Key prefix | `rk_sandbox_` | `rk_live_` |
+| Networks | Test chains, such as Base Sepolia | Production chains |
+| Money | Test tokens with no value | Real stablecoins |
+| Objects | The same shapes and the same ids | The same shapes and the same ids |
+| Events | The same types and the same payloads | The same types and the same payloads |
+| Data | Separate from live, and safe to reset | Your real books |
+
+Because the two environments share their shapes, the code you write against
+sandbox is the code you ship. Going live is a key swap, not a rewrite.
+
+## Working in sandbox
+
+Create a sandbox key, point your integration at it, and build the whole flow:
+catalog, checkout, subscription, usage, invoice, webhook. Nothing in sandbox
+can move real value, so you can be as rough with it as you like.
+
+Payments in sandbox still need test funds in the wallet that is paying. The
+hosted checkout tells the payer which network it expects.
+
+## Moving to live
+
+<Steps>
+  <Step title="Register a settlement address">
+    Each network you accept needs an address you control. Add them in the
+    dashboard under **Settings**, then **Settlement**, or through the
+    [settlement accounts API](/api-reference/settlement-accounts).
+
+    <Warning>
+    Check the address twice. A payment sent to the wrong address is gone, and
+    neither Reclack nor the network can recover it.
+    </Warning>
+  </Step>
+
+  <Step title="Mint a live key">
+    Create a key with only the permissions your integration uses, and store it
+    where your sandbox key is not.
+  </Step>
+
+  <Step title="Point your webhooks at production">
+    Endpoints are configured per environment. The live endpoint should be the
+    one your production service listens on, with its own signing secret.
+  </Step>
+
+  <Step title="Run one real payment">
+    Take a small payment through the live path before you send customers to it.
+    It confirms the settlement address, the webhook endpoint and your handler
+    in one go.
+  </Step>
+</Steps>
+
+## Telling environments apart in your code
+
+The key prefix is the simplest signal, and it is the one Reclack itself uses:
+
+```js
+const isLive = process.env.RECLACK_KEY.startsWith("rk_live_");
+```
+
+Objects also carry their environment, so a record that reaches your database
+can say which book it belongs to without you inferring it from the key that
+fetched it.

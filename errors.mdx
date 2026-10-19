@@ -1,0 +1,134 @@
+---
+title: "Errors"
+description: "The error envelope, the types we return, and what to do about each."
+---
+
+Reclack answers with conventional HTTP status codes. A `2xx` means the call
+worked, a `4xx` means something about the request needs fixing, and a `5xx`
+means the problem is ours.
+
+## The envelope
+
+Every error has the same shape:
+
+```json
+{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "price_not_found",
+    "message": "No price was found for that id"
+  }
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `type` | The broad category. Switch on this. |
+| `code` | A stable, machine-readable reason. Present when a specific one applies. |
+| `message` | A sentence written for a person. Safe to log, not meant for pattern matching. |
+
+Successful responses are just as plain. Objects and lists come back under
+`data`:
+
+```json
+{
+  "data": {
+    "id": "cus_7Fh2PqX9",
+    "email": "dana@acme.dev"
+  }
+}
+```
+
+## Types
+
+| Type | Status | What it means |
+| --- | --- | --- |
+| `invalid_request_error` | 400, 404, 409 | The request is missing something, contradicts itself, or names an object that does not exist. |
+| `authentication_error` | 401 | No key, a revoked key, or a key that does not exist. |
+| `permission_error` | 403 | The key is valid but is not allowed to do this. |
+| `api_error` | 500 | Something failed on our side. Retry is reasonable. |
+
+## Common cases
+
+<AccordionGroup>
+  <Accordion title="401 authentication_error">
+    The key was missing, malformed, or revoked. Check that you are sending
+    `Authorization: Bearer rk_live_...` and that the key has not been deleted
+    in the dashboard.
+
+    We answer the same way for a key that never existed and one that was
+    revoked, so the endpoint cannot be used to find out which.
+  </Accordion>
+
+  <Accordion title="403 permission_error">
+    The key is good but lacks the permission for this endpoint. Mint a key with
+    the permission, or add it to the existing one. See
+    [Authentication](/authentication#what-a-key-can-do).
+  </Accordion>
+
+  <Accordion title="400 invalid_request_error">
+    A field is missing or will not parse. The message names the field. Amounts
+    are decimal strings such as `"29.00"`, dates are RFC 3339, and networks are
+    lowercase names such as `base`.
+  </Accordion>
+
+  <Accordion title="409 on a usage record">
+    A usage record with that `idempotency_key` already exists. That is the
+    safeguard working: the original record stands and nothing was billed twice.
+    See [Idempotency](/idempotency).
+  </Accordion>
+
+  <Accordion title="429 too many requests">
+    You hit a rate limit. Back off and retry. Payer-facing endpoints on the
+    hosted checkout are throttled harder than merchant endpoints, because a
+    link is public and anyone holding the URL can call them.
+  </Accordion>
+
+  <Accordion title="500 api_error">
+    Ours. Retry with the same request. If it persists, write to support with
+    the time and the object reference.
+  </Accordion>
+</AccordionGroup>
+
+## Handling errors well
+
+```js
+async function createCheckout(body) {
+  const response = await fetch("https://api.reclack.com/v1/checkouts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RECLACK_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (response.ok) {
+    const { data } = await response.json();
+    return data;
+  }
+
+  const { error } = await response.json();
+
+  // Retry only what is worth retrying. A 400 will fail again with the same
+  // body, and a 401 will fail again with the same key.
+  if (response.status >= 500) {
+    throw new RetryableError(error.message);
+  }
+
+  throw new Error(`${error.type}: ${error.message}`);
+}
+```
+
+<Tip>
+Log the `code` rather than the `message`. Messages are written for people and
+may be reworded. Codes are part of the contract.
+</Tip>
+
+## Infrastructure failures
+
+When something fails deep in the stack, we answer with a plain `api_error`
+instead of echoing the underlying failure. Internal detail such as SQL
+fragments, table names or host addresses never reaches a response body. The
+full error is logged on our side with the handler that produced it, so support
+can find it from the time and the reference.

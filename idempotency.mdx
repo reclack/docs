@@ -1,0 +1,73 @@
+---
+title: "Idempotency"
+description: "How to retry safely, and where Reclack guarantees a request counts once."
+---
+
+Networks fail halfway. A request times out, your worker retries, and the
+question is whether the first attempt had already done the work. Reclack
+answers that in a few places, and this page is honest about which.
+
+## Usage records
+
+Recording usage takes a required `idempotency_key`. Send the same key twice and
+the second call does not create a second record.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/subscriptions/sub_4Kd9/usage" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "quantity": 48210,
+    "idempotency_key": "usage_2026-10-18T22:00_sub_4Kd9",
+    "recorded_at": "2026-10-18T22:00:00Z"
+  }'
+```
+
+A good key is deterministic: derive it from the thing being reported rather
+than generating a fresh one per attempt. The period and the subscription, or
+your own event id, both work. A random key defeats the purpose, because a retry
+produces a different one and the record is counted twice.
+
+<Warning>
+`idempotency_key` is required on usage records. A request without one is
+refused, so a retried report cannot bill a customer twice by accident.
+</Warning>
+
+## Billing periods
+
+A billing period can only ever open one invoice. That rule lives in the
+database, not in a worker, so several workers scanning at once divide the work
+rather than duplicating it. If your own scheduler asks Reclack to bill the same
+period twice, the second attempt does not produce a second invoice.
+
+## Payments
+
+A payment is addressed by its reference, and confirming it is a read of what
+the chain already shows. The hosted checkout polls that endpoint while a
+transaction gains confirmations, and polling it more often does not submit
+anything twice.
+
+Collections are submitted against the authorization your customer signed, and a
+collection can never exceed the cap in that authorization. If a transaction has
+already settled for a period, a retry reconciles against it rather than sending
+a second payment.
+
+## What is not idempotent yet
+
+Writes such as creating a product, a customer or a checkout session do not
+accept an `Idempotency-Key` header today. If your service retries them, guard
+with your own check first.
+
+A short pattern that works well:
+
+```js
+// Look for the object by your own identifier before creating it.
+const existing = await findCustomerByExternalId("user_4821");
+if (existing) return existing;
+
+return createCustomer({ external_id: "user_4821", email: "dana@acme.dev" });
+```
+
+`external_id` on a customer, and `metadata` on most other objects, exist partly
+for this. Put your own id on the object when you create it, and a retry can
+find it instead of making a second one.

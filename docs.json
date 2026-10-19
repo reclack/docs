@@ -1,72 +1,146 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Reclack Docs",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#533afd",
+    "light": "#8f7dff",
+    "dark": "#3b28c9"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
-    "pages": [
+    "tabs": [
       {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "index",
+              "quickstart",
+              "authentication",
+              "environments",
+              "errors",
+              "idempotency"
+            ]
+          },
+          {
+            "group": "Core objects",
+            "pages": [
+              "guides/objects",
+              "guides/products-and-prices",
+              "guides/customers"
+            ]
+          },
+          {
+            "group": "Taking payments",
+            "pages": [
+              "guides/checkout",
+              "guides/payment-links",
+              "guides/invoices"
+            ]
+          },
+          {
+            "group": "Recurring billing",
+            "pages": [
+              "guides/subscriptions",
+              "guides/usage-billing",
+              "guides/customer-portal"
+            ]
+          },
+          {
+            "group": "Money and events",
+            "pages": [
+              "guides/settlement",
+              "webhooks/overview",
+              "webhooks/verifying",
+              "webhooks/events"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Catalog",
+            "pages": [
+              "api-reference/products",
+              "api-reference/prices"
+            ]
+          },
+          {
+            "group": "Customers and billing",
+            "pages": [
+              "api-reference/customers",
+              "api-reference/subscriptions",
+              "api-reference/usage",
+              "api-reference/invoices"
+            ]
+          },
+          {
+            "group": "Payments",
+            "pages": [
+              "api-reference/checkouts",
+              "api-reference/payment-links",
+              "api-reference/transactions"
+            ]
+          },
+          {
+            "group": "Platform",
+            "pages": [
+              "api-reference/webhooks",
+              "api-reference/credentials",
+              "api-reference/settlement-accounts"
+            ]
+          }
         ]
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Dashboard",
+          "href": "https://app.reclack.com",
+          "icon": "gauge"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Status",
+          "href": "https://status.reclack.com",
+          "icon": "signal"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@mintlify.com"
+        "href": "mailto:support@reclack.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "href": "https://app.reclack.com"
     }
   },
   "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
+    "options": ["copy", "view", "claude", "chatgpt", "mcp"]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/reclack",
+      "github": "https://github.com/reclack",
+      "linkedin": "https://linkedin.com/company/reclack"
     }
   }
 }
