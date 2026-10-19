@@ -1,0 +1,5673 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Reclack API",
+    "version": "1.0.0",
+    "description": "Recurring and one-time stablecoin payments, taken straight from your customers' wallets.\n\nReclack is non-custodial. Payments move from a customer's wallet to a settlement address you control, and Reclack never holds funds and never asks anyone for a seed phrase or a private key.\n\n## Authentication\n\nSend your API key as a bearer token:\n\n```\nAuthorization: Bearer rk_live_your_key_here\n```\n\n`X-API-Key` and `Api-Key` are accepted too. The key prefix decides the environment: `rk_sandbox_` for test chains, `rk_live_` for production.\n\n## Responses\n\nObjects and lists come back under `data`. Errors come back under `error` with a `type`, an optional `code` and a message written for a person."
+  },
+  "servers": [
+    {
+      "url": "https://api.reclack.com",
+      "description": "Sandbox and live, chosen by your key"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Products"
+    },
+    {
+      "name": "Prices"
+    },
+    {
+      "name": "Customers"
+    },
+    {
+      "name": "Subscriptions"
+    },
+    {
+      "name": "Usage"
+    },
+    {
+      "name": "Invoices"
+    },
+    {
+      "name": "Checkouts"
+    },
+    {
+      "name": "Payment links"
+    },
+    {
+      "name": "Transactions"
+    },
+    {
+      "name": "Webhooks"
+    },
+    {
+      "name": "API keys"
+    },
+    {
+      "name": "Settlement"
+    }
+  ],
+  "paths": {
+    "/v1/products": {
+      "post": {
+        "summary": "Create product",
+        "description": "Create a product, optionally with its first price in the same call.",
+        "operationId": "products-create",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "What the product is called.",
+                    "example": "Pro Plan"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Shown on the hosted page.",
+                    "example": "Everything in Starter, plus priority support"
+                  },
+                  "price": {
+                    "type": "object",
+                    "properties": {
+                      "amount": {
+                        "type": "string",
+                        "example": "29.00"
+                      },
+                      "cadence": {
+                        "type": "string",
+                        "enum": [
+                          "once",
+                          "daily",
+                          "weekly",
+                          "monthly",
+                          "yearly"
+                        ],
+                        "example": "monthly"
+                      },
+                      "networks": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Networks this price may settle on.",
+                        "example": [
+                          "base",
+                          "ethereum"
+                        ]
+                      },
+                      "network": {
+                        "type": "string",
+                        "description": "A single network, when there is only one.",
+                        "example": "base"
+                      },
+                      "interval_seconds": {
+                        "type": "integer",
+                        "description": "A custom interval, when the cadences do not fit."
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Your own key and value pairs."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List products",
+        "description": "Every product in the environment the key belongs to, each with its prices.",
+        "operationId": "products-list",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products/{productId}": {
+      "get": {
+        "summary": "Retrieve product",
+        "description": "Retrieve one product with its prices.",
+        "operationId": "products-get",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update product",
+        "description": "Update a product's name, description, active flag or metadata.",
+        "operationId": "products-update",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Dana Okafor"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Billing events for the production app"
+                  },
+                  "active": {
+                    "type": "boolean",
+                    "description": "An inactive product cannot start new subscriptions."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Replaces the stored object."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete product",
+        "description": "Delete a product that has no history.",
+        "operationId": "products-delete",
+        "tags": [
+          "Products"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          }
+        ]
+      }
+    },
+    "/v1/products/{productId}/prices": {
+      "post": {
+        "summary": "Create price",
+        "description": "Add a price to a product.",
+        "operationId": "prices-create",
+        "tags": [
+          "Prices"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Price"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product the price belongs to.",
+            "example": "prod_2Pb8xk9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "string",
+                    "description": "Decimal string.",
+                    "example": "290.00"
+                  },
+                  "cadence": {
+                    "type": "string",
+                    "enum": [
+                      "once",
+                      "daily",
+                      "weekly",
+                      "monthly",
+                      "yearly"
+                    ],
+                    "example": "yearly"
+                  },
+                  "networks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Networks this price may settle on.",
+                    "example": [
+                      "base",
+                      "ethereum"
+                    ]
+                  },
+                  "network": {
+                    "type": "string",
+                    "description": "A single network, when there is only one.",
+                    "example": "base"
+                  },
+                  "interval_seconds": {
+                    "type": "integer",
+                    "description": "A custom interval, when the cadences do not fit."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "amount",
+                  "cadence"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List prices",
+        "description": "Every price on a product.",
+        "operationId": "prices-list",
+        "tags": [
+          "Prices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Price"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          }
+        ]
+      }
+    },
+    "/v1/products/{productId}/prices/{priceId}": {
+      "get": {
+        "summary": "Retrieve price",
+        "description": "Retrieve one price.",
+        "operationId": "prices-get",
+        "tags": [
+          "Prices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Price"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          },
+          {
+            "name": "priceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The price id.",
+            "example": "price_7Fh2PqX9"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update price",
+        "description": "Deactivate a price or change its metadata.",
+        "operationId": "prices-update",
+        "tags": [
+          "Prices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Price"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          },
+          {
+            "name": "priceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The price id.",
+            "example": "price_7Fh2PqX9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete price",
+        "description": "Delete a price that was never used.",
+        "operationId": "prices-delete",
+        "tags": [
+          "Prices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product id.",
+            "example": "prod_2Pb8xk9"
+          },
+          {
+            "name": "priceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The price id.",
+            "example": "price_7Fh2PqX9"
+          }
+        ]
+      }
+    },
+    "/v1/customers": {
+      "post": {
+        "summary": "Create customer",
+        "description": "Create a customer record.",
+        "operationId": "customers-create",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "dana@acme.dev"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Dana Okafor"
+                  },
+                  "external_id": {
+                    "type": "string",
+                    "description": "Your own identifier.",
+                    "example": "user_4821"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List customers",
+        "description": "List customers, optionally filtered.",
+        "operationId": "customers-list",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Customer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by email address."
+          },
+          {
+            "name": "external_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by your own identifier."
+          }
+        ]
+      }
+    },
+    "/v1/customers/{customerId}": {
+      "get": {
+        "summary": "Retrieve customer",
+        "description": "Retrieve one customer.",
+        "operationId": "customers-get",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The customer id.",
+            "example": "cus_7Fh2PqX9"
+          }
+        ]
+      }
+    },
+    "/v1/subscriptions": {
+      "get": {
+        "summary": "List subscriptions",
+        "description": "Every subscription in the environment.",
+        "operationId": "subscriptions-list",
+        "tags": [
+          "Subscriptions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Subscription"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/subscriptions/{subscriptionId}": {
+      "get": {
+        "summary": "Retrieve subscription",
+        "description": "Retrieve one subscription with its period dates.",
+        "operationId": "subscriptions-get",
+        "tags": [
+          "Subscriptions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Subscription"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The subscription id.",
+            "example": "sub_4Kd9"
+          }
+        ]
+      }
+    },
+    "/v1/subscriptions/{subscriptionId}/usage": {
+      "post": {
+        "summary": "Record usage",
+        "description": "Record metered usage against a subscription.",
+        "operationId": "usage-record",
+        "tags": [
+          "Usage"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UsageRecord"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A record with that idempotency key already exists. The original stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "subscriptionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The subscription being metered.",
+            "example": "sub_4Kd9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "integer",
+                    "description": "Whole units of whatever you meter.",
+                    "example": 48210
+                  },
+                  "idempotency_key": {
+                    "type": "string",
+                    "description": "Makes a retry safe.",
+                    "example": "sub_4Kd9:2026-10-18T22:00"
+                  },
+                  "recorded_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "When the usage happened. Defaults to now."
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Your own context, such as the meter name."
+                  }
+                },
+                "required": [
+                  "quantity",
+                  "idempotency_key"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/invoices": {
+      "post": {
+        "summary": "Create invoice",
+        "description": "Create a draft invoice.",
+        "operationId": "invoices-create",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "example": "cus_7Fh2PqX9"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "example": "120.00"
+                  },
+                  "due_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-11-10T23:59:59Z"
+                  },
+                  "networks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Networks the customer may pay on.",
+                    "example": [
+                      "base",
+                      "ethereum"
+                    ]
+                  },
+                  "network": {
+                    "type": "string",
+                    "description": "A single network.",
+                    "example": "base"
+                  },
+                  "memo": {
+                    "type": "string",
+                    "example": "October retainer and platform seats"
+                  },
+                  "footer": {
+                    "type": "string",
+                    "example": "Thanks for working with us."
+                  },
+                  "tax_id": {
+                    "type": "string",
+                    "example": "GB123456789"
+                  },
+                  "fee_payer": {
+                    "type": "string",
+                    "enum": [
+                      "merchant",
+                      "customer"
+                    ]
+                  },
+                  "line_items": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LineItem"
+                    }
+                  },
+                  "custom_fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Purchase order"
+                        },
+                        "value": {
+                          "type": "string",
+                          "example": "PO-4821"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "amount",
+                  "due_at"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List invoices",
+        "description": "List invoices, optionally filtered.",
+        "operationId": "invoices-list",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Invoice"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this customer's invoices."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "draft, open, paid, overdue or void."
+          }
+        ]
+      }
+    },
+    "/v1/invoices/{invoiceId}": {
+      "get": {
+        "summary": "Retrieve invoice",
+        "description": "Retrieve one invoice.",
+        "operationId": "invoices-get",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update invoice",
+        "description": "Update a draft invoice.",
+        "operationId": "invoices-update",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "string",
+                    "example": "120.00"
+                  },
+                  "due_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "memo": {
+                    "type": "string",
+                    "example": "October retainer and platform seats"
+                  },
+                  "footer": {
+                    "type": "string",
+                    "example": "Thanks for working with us."
+                  },
+                  "tax_id": {
+                    "type": "string",
+                    "example": "GB123456789"
+                  },
+                  "line_items": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/LineItem"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete invoice",
+        "description": "Delete a draft invoice.",
+        "operationId": "invoices-delete",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ]
+      }
+    },
+    "/v1/invoices/{invoiceId}/send": {
+      "post": {
+        "summary": "Send invoice",
+        "description": "Finalise an invoice and email it with its PDF.",
+        "operationId": "invoices-send",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ]
+      }
+    },
+    "/v1/invoices/{invoiceId}/reminders": {
+      "post": {
+        "summary": "Set reminders",
+        "description": "Turn reminders on or off for an invoice.",
+        "operationId": "invoices-reminders",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether reminders run for this invoice."
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/invoices/{invoiceId}/pdf": {
+      "get": {
+        "summary": "Download invoice PDF",
+        "description": "Download the invoice document.",
+        "operationId": "invoices-pdf",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "The document",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ]
+      }
+    },
+    "/v1/invoices/{invoiceId}/charge": {
+      "post": {
+        "summary": "Charge invoice",
+        "description": "Collect an invoice against an existing authorization.",
+        "operationId": "invoices-charge",
+        "tags": [
+          "Invoices"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Invoice"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The invoice id.",
+            "example": "in_0182"
+          }
+        ]
+      }
+    },
+    "/v1/checkouts": {
+      "post": {
+        "summary": "Create checkout session",
+        "description": "Create a hosted checkout session.",
+        "operationId": "checkouts-create",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Checkout"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price_id": {
+                    "type": "string",
+                    "description": "A price from your catalog.",
+                    "example": "price_7Fh2PqX9"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "A one-off amount not in your catalog. Use instead of price_id.",
+                    "example": "29.00"
+                  },
+                  "networks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Narrow the networks for this session.",
+                    "example": [
+                      "base",
+                      "ethereum"
+                    ]
+                  },
+                  "customer": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Email, name, or an existing customer id."
+                  },
+                  "fee_payer": {
+                    "type": "string",
+                    "enum": [
+                      "merchant",
+                      "customer"
+                    ],
+                    "description": "merchant by default."
+                  },
+                  "expires_in": {
+                    "type": "integer",
+                    "description": "Seconds until the session expires.",
+                    "example": 3600
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Returned on the session and on its events."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/checkout/{reference}": {
+      "get": {
+        "summary": "Retrieve a payable object",
+        "description": "Resolve any reference a payer can be handed.",
+        "operationId": "checkouts-payer-get",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerCheckout"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A checkout, payment link or invoice reference.",
+            "example": "chk_7Fh2PqX9Lm"
+          }
+        ],
+        "security": []
+      }
+    },
+    "/v1/checkout/{reference}/transactions": {
+      "post": {
+        "summary": "Open a payment attempt",
+        "description": "Start one payer's attempt against a reference.",
+        "operationId": "checkouts-payer-transaction",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerTransaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A checkout, payment link or invoice reference.",
+            "example": "chk_7Fh2PqX9Lm"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "network": {
+                    "type": "string",
+                    "description": "Which network the payer chose.",
+                    "example": "base"
+                  },
+                  "wallet_address": {
+                    "type": "string",
+                    "example": "0x71A4f3b1d8e2A5c7E9f0B4d6A8c2E1f329F2"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Collected only when the page asks for it.",
+                    "example": "dana@acme.dev"
+                  },
+                  "amount": {
+                    "type": "string",
+                    "description": "For a link where the payer names the figure.",
+                    "example": "29.00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/checkout/{reference}/confirm": {
+      "post": {
+        "summary": "Confirm a payment",
+        "description": "Record a payment the payer already authorized onchain.",
+        "operationId": "checkouts-payer-confirm",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerTransaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "reference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A checkout, payment link or invoice reference.",
+            "example": "chk_7Fh2PqX9Lm"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hash": {
+                    "type": "string",
+                    "description": "The transaction hash the wallet returned.",
+                    "example": "0x2e2d9a41c7f1b86d05e4a3c2b7f9d1083e6a5c4b2d8f7091a3c5e7b9d1f3a5306"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/pay/{id}": {
+      "get": {
+        "summary": "Retrieve a payment",
+        "description": "Read a payment by its own id.",
+        "operationId": "checkouts-payer-payment",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerTransaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment id.",
+            "example": "txn_2e2df306"
+          }
+        ],
+        "security": []
+      }
+    },
+    "/v1/pay/{id}/confirm": {
+      "post": {
+        "summary": "Confirm a payment by id",
+        "description": "Follow a payment to a confirmed state.",
+        "operationId": "checkouts-payer-payment-confirm",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerTransaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment id.",
+            "example": "txn_2e2df306"
+          }
+        ],
+        "security": []
+      }
+    },
+    "/v1/pay/{id}/authorize": {
+      "post": {
+        "summary": "Submit a signed authorization",
+        "description": "Hand Reclack a signed authorization to submit.",
+        "operationId": "checkouts-payer-authorize",
+        "tags": [
+          "Checkouts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PayerTransaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment id.",
+            "example": "txn_2e2df306"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "signature": {
+                    "type": "string",
+                    "description": "The signed authorization from the payer's wallet.",
+                    "example": "0x8f3c1a2b9d7e04561f2a3b4c5d6e7f8091a2b3c4d5e6f70819a2b3c4d5e6f7081c"
+                  },
+                  "nonce": {
+                    "type": "string",
+                    "example": "0x4a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9"
+                  },
+                  "valid_after": {
+                    "type": "integer"
+                  },
+                  "valid_before": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/payment-links": {
+      "post": {
+        "summary": "Create payment link",
+        "description": "Create a shareable payment page.",
+        "operationId": "payment-links-create",
+        "tags": [
+          "Payment links"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentLink"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "What the payer sees as the line item.",
+                    "example": "Premium Research Access"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "fixed",
+                      "custom_amount"
+                    ],
+                    "example": "fixed"
+                  },
+                  "price_id": {
+                    "type": "string",
+                    "description": "Required for a fixed price.",
+                    "example": "price_7Fh2PqX9"
+                  },
+                  "min_amount": {
+                    "type": "string",
+                    "description": "For custom_amount.",
+                    "example": "5.00"
+                  },
+                  "max_amount": {
+                    "type": "string",
+                    "description": "For custom_amount.",
+                    "example": "500.00"
+                  },
+                  "preset_amount": {
+                    "type": "string",
+                    "description": "The figure the page starts on.",
+                    "example": "25.00"
+                  },
+                  "network": {
+                    "type": "string",
+                    "description": "A single network, when the link is not built from a price.",
+                    "example": "base"
+                  },
+                  "collect_email": {
+                    "type": "boolean"
+                  },
+                  "collect_name": {
+                    "type": "boolean"
+                  },
+                  "collect_phone": {
+                    "type": "boolean"
+                  },
+                  "collect_address": {
+                    "type": "boolean"
+                  },
+                  "max_payments": {
+                    "type": "integer",
+                    "description": "Stop accepting payments after this many."
+                  },
+                  "after_completion": {
+                    "type": "string",
+                    "enum": [
+                      "message",
+                      "redirect"
+                    ]
+                  },
+                  "confirmation_message": {
+                    "type": "string",
+                    "example": "Payment received. Access is live."
+                  },
+                  "redirect_url": {
+                    "type": "string",
+                    "example": "https://acme.dev/thanks"
+                  },
+                  "fee_payer": {
+                    "type": "string",
+                    "enum": [
+                      "merchant",
+                      "customer"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List payment links",
+        "description": "Every payment link in the environment.",
+        "operationId": "payment-links-list",
+        "tags": [
+          "Payment links"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PaymentLink"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payment-links/{id}": {
+      "get": {
+        "summary": "Retrieve payment link",
+        "description": "Retrieve one payment link.",
+        "operationId": "payment-links-get",
+        "tags": [
+          "Payment links"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentLink"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment link id.",
+            "example": "plink_8Qd3ZkR2"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update payment link",
+        "description": "Update or deactivate a payment link.",
+        "operationId": "payment-links-update",
+        "tags": [
+          "Payment links"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/PaymentLink"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment link id.",
+            "example": "plink_8Qd3ZkR2"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Dana Okafor"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive"
+                    ]
+                  },
+                  "collect_email": {
+                    "type": "boolean"
+                  },
+                  "collect_name": {
+                    "type": "boolean"
+                  },
+                  "after_completion": {
+                    "type": "string",
+                    "enum": [
+                      "message",
+                      "redirect"
+                    ]
+                  },
+                  "confirmation_message": {
+                    "type": "string",
+                    "example": "Payment received. Access is live."
+                  },
+                  "redirect_url": {
+                    "type": "string",
+                    "example": "https://acme.dev/thanks"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete payment link",
+        "description": "Delete a payment link that never took a payment.",
+        "operationId": "payment-links-delete",
+        "tags": [
+          "Payment links"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The payment link id.",
+            "example": "plink_8Qd3ZkR2"
+          }
+        ]
+      }
+    },
+    "/v1/transactions": {
+      "get": {
+        "summary": "List transactions",
+        "description": "Every payment, with the chain's own record attached.",
+        "operationId": "transactions-list",
+        "tags": [
+          "Transactions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this customer's payments."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "pending, confirmed or failed."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "How many to return."
+          }
+        ]
+      }
+    },
+    "/v1/transactions/{id}": {
+      "get": {
+        "summary": "Retrieve transaction",
+        "description": "Retrieve one payment.",
+        "operationId": "transactions-get",
+        "tags": [
+          "Transactions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The transaction id.",
+            "example": "txn_2e2df306"
+          }
+        ]
+      }
+    },
+    "/v1/webhooks": {
+      "post": {
+        "summary": "Create endpoint",
+        "description": "Register an endpoint to receive events.",
+        "operationId": "webhooks-create-endpoint",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WebhookEndpoint"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "https://acme.dev/hooks/reclack"
+                  },
+                  "event_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "The types this endpoint wants. Unknown types are refused.",
+                    "example": [
+                      "invoice.paid",
+                      "subscription.renewed"
+                    ]
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "For your own reference in the dashboard.",
+                    "example": "Billing events for the production app"
+                  }
+                },
+                "required": [
+                  "url",
+                  "event_types"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List endpoints",
+        "description": "Every webhook endpoint in the environment.",
+        "operationId": "webhooks-list-endpoints",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebhookEndpoint"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/{endpointId}": {
+      "patch": {
+        "summary": "Update endpoint",
+        "description": "Move an endpoint, change its types, or resume it.",
+        "operationId": "webhooks-update-endpoint",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WebhookEndpoint"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The endpoint id.",
+            "example": "whe_7Fh2PqX9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "example": "https://acme.dev/hooks/reclack"
+                  },
+                  "event_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "invoice.paid",
+                      "subscription.renewed"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "paused"
+                    ]
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Billing events for the production app"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete endpoint",
+        "description": "Remove an endpoint.",
+        "operationId": "webhooks-delete-endpoint",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The endpoint id.",
+            "example": "whe_7Fh2PqX9"
+          }
+        ]
+      }
+    },
+    "/v1/webhooks/{endpointId}/secret": {
+      "post": {
+        "summary": "Roll signing secret",
+        "description": "Issue a new signing secret for an endpoint.",
+        "operationId": "webhooks-roll-secret",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WebhookEndpoint"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "endpointId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The endpoint id.",
+            "example": "whe_7Fh2PqX9"
+          }
+        ]
+      }
+    },
+    "/v1/webhook-deliveries": {
+      "get": {
+        "summary": "List deliveries",
+        "description": "Every delivery attempt, with what your endpoint answered.",
+        "operationId": "webhooks-list-deliveries",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebhookDelivery"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "endpoint_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this endpoint's deliveries."
+          },
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Every attempt for one event."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "pending, succeeded or failed."
+          }
+        ]
+      }
+    },
+    "/v1/webhook-deliveries/{deliveryId}/retry": {
+      "post": {
+        "summary": "Retry delivery",
+        "description": "Send the same event again, immediately.",
+        "operationId": "webhooks-retry-delivery",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WebhookDelivery"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deliveryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The delivery id.",
+            "example": "whd_8Qd3"
+          }
+        ]
+      }
+    },
+    "/v1/events": {
+      "get": {
+        "summary": "List events",
+        "description": "Everything Reclack has emitted for your workspace.",
+        "operationId": "webhooks-list-events",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Event"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by event type."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "How many to return."
+          }
+        ]
+      }
+    },
+    "/v1/event-types": {
+      "get": {
+        "summary": "List event types",
+        "description": "The types available to subscribe to.",
+        "operationId": "webhooks-list-event-types",
+        "tags": [
+          "Webhooks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/credentials": {
+      "post": {
+        "summary": "Create API key",
+        "description": "Mint a key for an environment.",
+        "operationId": "credentials-create",
+        "tags": [
+          "API keys"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Credential"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "What this key is for.",
+                    "example": "usage-reporter"
+                  },
+                  "environment": {
+                    "type": "string",
+                    "enum": [
+                      "sandbox",
+                      "live"
+                    ],
+                    "example": "live"
+                  },
+                  "permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "The permissions this key carries.",
+                    "example": [
+                      "products:write",
+                      "invoices:write"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "environment"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List API keys",
+        "description": "Every key, without its secret.",
+        "operationId": "credentials-list",
+        "tags": [
+          "API keys"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Credential"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/credentials/{credentialId}": {
+      "delete": {
+        "summary": "Revoke API key",
+        "description": "Revoke a key immediately.",
+        "operationId": "credentials-revoke",
+        "tags": [
+          "API keys"
+        ],
+        "responses": {
+          "200": {
+            "description": "Revoked"
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "credentialId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The credential id.",
+            "example": "cred_7Fh2PqX9"
+          }
+        ]
+      }
+    },
+    "/v1/merchants/{merchantId}/settlement-accounts": {
+      "post": {
+        "summary": "Add settlement account",
+        "description": "Register the address a network settles to.",
+        "operationId": "settlement-create",
+        "tags": [
+          "Settlement"
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SettlementAccount"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "merchantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your workspace id.",
+            "example": "mer_2Pb8"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "network": {
+                    "type": "string",
+                    "example": "base"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "Settlement"
+                  }
+                },
+                "required": [
+                  "network",
+                  "address"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List settlement accounts",
+        "description": "Every registered address.",
+        "operationId": "settlement-list",
+        "tags": [
+          "Settlement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SettlementAccount"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "merchantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your workspace id.",
+            "example": "mer_2Pb8"
+          }
+        ]
+      }
+    },
+    "/v1/merchants/{merchantId}/settlement-accounts/{accountId}": {
+      "get": {
+        "summary": "Retrieve settlement account",
+        "description": "Retrieve one registered address.",
+        "operationId": "settlement-get",
+        "tags": [
+          "Settlement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SettlementAccount"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "merchantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your workspace id.",
+            "example": "mer_2Pb8"
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The settlement account id.",
+            "example": "acct_4Kd9"
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update settlement account",
+        "description": "Change where a network settles.",
+        "operationId": "settlement-update",
+        "tags": [
+          "Settlement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SettlementAccount"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "merchantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your workspace id.",
+            "example": "mer_2Pb8"
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The settlement account id.",
+            "example": "acct_4Kd9"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "example": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921"
+                  },
+                  "label": {
+                    "type": "string",
+                    "example": "Settlement"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/merchants/{merchantId}/settlement-balances": {
+      "get": {
+        "summary": "List settlement balances",
+        "description": "What has settled, per network.",
+        "operationId": "settlement-balances",
+        "tags": [
+          "Settlement"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SettlementBalance"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is missing something or contradicts itself",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No key, a revoked key, or a key that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key is valid but is not allowed to do this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "merchantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your workspace id.",
+            "example": "mer_2Pb8"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Your Reclack API key."
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "One of invalid_request_error, authentication_error, permission_error or api_error.",
+                "example": "invalid_request_error"
+              },
+              "code": {
+                "type": "string",
+                "description": "A stable, machine readable reason.",
+                "example": "price_not_found"
+              },
+              "message": {
+                "type": "string",
+                "description": "A sentence written for a person.",
+                "example": "No price was found for that id"
+              }
+            }
+          }
+        }
+      },
+      "Price": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "price_7Fh2PqX9"
+          },
+          "product_id": {
+            "type": "string",
+            "example": "prod_2Pb8xk9"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount per period, as a decimal string.",
+            "example": "29.00"
+          },
+          "amount_atomic": {
+            "type": "string",
+            "description": "The same figure in the token's atomic units.",
+            "example": "29000000"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "cadence": {
+            "type": "string",
+            "enum": [
+              "once",
+              "daily",
+              "weekly",
+              "monthly",
+              "yearly"
+            ],
+            "example": "monthly"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "description": "Seconds between periods.",
+            "example": 2592000
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "token_address": {
+            "type": "string",
+            "example": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+          },
+          "token_decimals": {
+            "type": "integer",
+            "example": 6
+          },
+          "active": {
+            "type": "boolean",
+            "description": "An inactive price cannot start new subscriptions."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "prod_2Pb8xk9"
+          },
+          "name": {
+            "type": "string",
+            "example": "Pro Plan"
+          },
+          "description": {
+            "type": "string",
+            "example": "Everything in Starter, plus priority support"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "deletable": {
+            "type": "boolean",
+            "description": "False once the product has history."
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Price"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "cus_7Fh2PqX9"
+          },
+          "email": {
+            "type": "string",
+            "example": "dana@acme.dev"
+          },
+          "name": {
+            "type": "string",
+            "example": "Dana Okafor"
+          },
+          "external_id": {
+            "type": "string",
+            "description": "Your own identifier for this person.",
+            "example": "user_4821"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Subscription": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "sub_4Kd9"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "past_due",
+              "paused",
+              "cancelled"
+            ],
+            "example": "active"
+          },
+          "mode": {
+            "type": "string",
+            "description": "fixed for a flat amount, metered for usage billing.",
+            "enum": [
+              "fixed",
+              "metered"
+            ],
+            "example": "fixed"
+          },
+          "amount": {
+            "type": "string",
+            "example": "29.00"
+          },
+          "amount_atomic": {
+            "type": "string",
+            "example": "29000000"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "cadence": {
+            "type": "string",
+            "example": "monthly"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "example": 2592000
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "contract_address": {
+            "type": "string",
+            "description": "The authorization backing the subscription.",
+            "example": "0x4c2A9b1d7E0f3B6a8C5d2E9f1A7b3C4d5E6f7081"
+          },
+          "onchain_id": {
+            "type": "string",
+            "example": "0x9f1c4a2b8e7d03564a1b2c3d4e5f60718293a4b5"
+          },
+          "platform_fee_bps": {
+            "type": "integer",
+            "example": 100
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "current_period_start": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "next_charge_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "UsageRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "usg_9Kd2Zm"
+          },
+          "subscription_id": {
+            "type": "string",
+            "example": "sub_4Kd9"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 48210
+          },
+          "idempotency_key": {
+            "type": "string",
+            "example": "sub_4Kd9:2026-10-18T22:00"
+          },
+          "recorded_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "LineItem": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Platform seats"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 4
+          },
+          "unit_amount": {
+            "type": "string",
+            "example": "20.00"
+          }
+        }
+      },
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "in_0182"
+          },
+          "code": {
+            "type": "string",
+            "description": "The human readable number on the document.",
+            "example": "INV-00182"
+          },
+          "reference": {
+            "type": "string",
+            "description": "What a payer's link resolves against.",
+            "example": "in_0182"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "open",
+              "paid",
+              "overdue",
+              "void"
+            ],
+            "example": "open"
+          },
+          "amount": {
+            "type": "string",
+            "example": "120.00"
+          },
+          "amount_atomic": {
+            "type": "string",
+            "example": "120000000"
+          },
+          "fee_atomic": {
+            "type": "string",
+            "example": "1200000"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "attempt_count": {
+            "type": "integer",
+            "example": 0
+          },
+          "next_attempt_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "reminders_enabled": {
+            "type": "boolean"
+          },
+          "last_reminder_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "failure_code": {
+            "type": "string",
+            "example": "insufficient_allowance"
+          },
+          "failure_message": {
+            "type": "string",
+            "example": "The authorization no longer covers this amount"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Checkout": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "chk_7Fh2PqX9Lm"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "completed",
+              "expired"
+            ],
+            "example": "open"
+          },
+          "amount": {
+            "type": "string",
+            "example": "29.00"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "networks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Networks the payer may settle on.",
+            "example": [
+              "base",
+              "ethereum",
+              "polygon"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "Send your customer here.",
+            "example": "https://pay.reclack.com/chk_7Fh2PqX9Lm"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "PaymentLink": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "plink_8Qd3ZkR2"
+          },
+          "name": {
+            "type": "string",
+            "example": "Premium Research Access"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "custom_amount"
+            ],
+            "example": "fixed"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ],
+            "example": "active"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://pay.reclack.com/plink_8Qd3ZkR2"
+          },
+          "price_id": {
+            "type": "string",
+            "example": "price_7Fh2PqX9"
+          },
+          "min_amount": {
+            "type": "string",
+            "example": "5.00"
+          },
+          "max_amount": {
+            "type": "string",
+            "example": "500.00"
+          },
+          "preset_amount": {
+            "type": "string",
+            "example": "25.00"
+          },
+          "collect_email": {
+            "type": "boolean"
+          },
+          "collect_name": {
+            "type": "boolean"
+          },
+          "collect_phone": {
+            "type": "boolean"
+          },
+          "collect_address": {
+            "type": "boolean"
+          },
+          "max_payments": {
+            "type": "integer"
+          },
+          "after_completion": {
+            "type": "string",
+            "enum": [
+              "message",
+              "redirect"
+            ]
+          },
+          "confirmation_message": {
+            "type": "string",
+            "example": "Payment received. Access is live."
+          },
+          "redirect_url": {
+            "type": "string",
+            "example": "https://acme.dev/thanks"
+          },
+          "fee_payer": {
+            "type": "string",
+            "enum": [
+              "merchant",
+              "customer"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "txn_2e2df306"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "confirmed",
+              "failed"
+            ],
+            "example": "confirmed"
+          },
+          "amount": {
+            "type": "string",
+            "example": "29.00"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "hash": {
+            "type": "string",
+            "description": "The transaction hash onchain.",
+            "example": "0x2e2d9a41c7f1b86d05e4a3c2b7f9d1083e6a5c4b2d8f7091a3c5e7b9d1f3a5306"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "cus_7Fh2PqX9"
+          },
+          "invoice_id": {
+            "type": "string",
+            "example": "in_0219"
+          },
+          "settled_to": {
+            "type": "string",
+            "description": "The settlement address the funds landed in.",
+            "example": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921"
+          },
+          "confirmed_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "WebhookEndpoint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "whe_7Fh2PqX9"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://acme.dev/hooks/reclack"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "disabled"
+            ],
+            "example": "active"
+          },
+          "description": {
+            "type": "string",
+            "example": "Billing events for the production app"
+          },
+          "event_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The types this endpoint receives.",
+            "example": [
+              "invoice.paid",
+              "subscription.renewed"
+            ]
+          },
+          "secret": {
+            "type": "string",
+            "description": "Returned only when the endpoint is created or its secret is rolled.",
+            "example": "whsec_9f1c4a2b8e7d0356"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "WebhookDelivery": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "whd_8Qd3"
+          },
+          "endpoint_id": {
+            "type": "string",
+            "example": "whe_7Fh2PqX9"
+          },
+          "event_id": {
+            "type": "string",
+            "example": "evt_4Kd9ZmPq"
+          },
+          "event_type": {
+            "type": "string",
+            "example": "subscription.renewed"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "succeeded",
+              "failed"
+            ],
+            "example": "succeeded"
+          },
+          "attempt": {
+            "type": "integer",
+            "example": 2
+          },
+          "response_status": {
+            "type": "integer",
+            "example": 200
+          },
+          "response_body": {
+            "type": "string",
+            "description": "Captured, up to a couple of kilobytes.",
+            "example": "{\"received\":true}"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "example": 118
+          },
+          "delivered_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "evt_4Kd9ZmPq"
+          },
+          "type": {
+            "type": "string",
+            "example": "subscription.renewed"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "payment",
+              "invoice",
+              "subscription",
+              "checkout",
+              "customer"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The object the event is about."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "Credential": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "cred_7Fh2PqX9"
+          },
+          "name": {
+            "type": "string",
+            "example": "usage-reporter"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "live"
+            ],
+            "example": "live"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "The visible fragment of the key.",
+            "example": "rk_live_4Kd9"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Returned once, at creation.",
+            "example": "rk_live_your_new_key_secret"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "products:write",
+              "invoices:write",
+              "usage:write"
+            ]
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "revoked_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "SettlementAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "acct_4Kd9"
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "address": {
+            "type": "string",
+            "example": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921"
+          },
+          "label": {
+            "type": "string",
+            "example": "Settlement"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-10-18T22:07:41Z"
+          }
+        }
+      },
+      "SettlementBalance": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "settled": {
+            "type": "string",
+            "description": "Total settled on this network.",
+            "example": "12840.00"
+          },
+          "address": {
+            "type": "string",
+            "example": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921"
+          }
+        }
+      },
+      "PayerCheckout": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "example": "chk_7Fh2PqX9Lm"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "checkout",
+              "payment_link",
+              "invoice"
+            ],
+            "example": "checkout"
+          },
+          "merchant_name": {
+            "type": "string",
+            "example": "Acme Labs"
+          },
+          "amount": {
+            "type": "string",
+            "example": "29.00"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "cadence": {
+            "type": "string",
+            "example": "monthly"
+          },
+          "networks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Each network the payer may settle on, with its token address and chain id."
+          },
+          "branding": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Logo, tint and button colour."
+          },
+          "status": {
+            "type": "string",
+            "example": "open"
+          }
+        }
+      },
+      "PayerTransaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "txn_2e2df306"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "confirmed",
+              "failed"
+            ],
+            "example": "pending"
+          },
+          "amount": {
+            "type": "string",
+            "example": "29.00"
+          },
+          "currency": {
+            "type": "string",
+            "example": "USDC"
+          },
+          "network": {
+            "type": "string",
+            "example": "base"
+          },
+          "chain_id": {
+            "type": "integer",
+            "example": 8453
+          },
+          "hash": {
+            "type": "string",
+            "example": "0x2e2d9a41c7f1b86d05e4a3c2b7f9d1083e6a5c4b2d8f7091a3c5e7b9d1f3a5306"
+          },
+          "confirmations": {
+            "type": "integer",
+            "example": 7
+          },
+          "receipt_url": {
+            "type": "string",
+            "example": "https://pay.reclack.com/pay/txn_2e2df306"
+          }
+        }
+      }
+    }
+  }
+}
