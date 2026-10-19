@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="Periods repeating">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 170" width="480" height="170" role="img" aria-label="Periods repeating">
 	<defs>
 		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
 			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
 			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
 		</radialGradient>
 	</defs>
-	<g transform="translate(240.00,75.19)">
+	<g transform="translate(240.00,35.18) scale(1.0000)">
 		<ellipse cx="0.00" cy="64.80" rx="150.00" ry="58.00" fill="url(#glow)" opacity="0.5"/>
 		<ellipse cx="0.00" cy="62.10" rx="118" ry="68" fill="none" stroke="#7a63ff" stroke-width="2.6" stroke-dasharray="7 8" opacity="0.65"/>
 		<path d="M112.00,46.10 l10,16 -16,6 z" fill="#7a63ff" opacity="0.8"/>
