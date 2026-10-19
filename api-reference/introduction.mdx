@@ -1,0 +1,67 @@
+---
+title: "API reference"
+description: "Conventions that hold across every endpoint."
+---
+
+The Reclack API is REST over HTTPS, with JSON in and JSON out. Resources have
+predictable URLs, and responses carry the object under `data`.
+
+```
+https://api.reclack.com
+```
+
+## Conventions
+
+| Convention | Detail |
+| --- | --- |
+| Authentication | `Authorization: Bearer rk_live_...`. See [Authentication](/authentication). |
+| Environment | Decided by the key prefix, not by the host. |
+| Content type | `application/json` on requests with a body. |
+| Success | `200` for reads and updates, `201` for creates. |
+| Envelope | `{ "data": ... }` on success, `{ "error": { ... } }` on failure. |
+| Amounts | Decimal strings, such as `"29.00"`. Stored internally in atomic units. |
+| Timestamps | RFC 3339 in UTC, such as `2026-10-18T22:07:41Z`. |
+| Ids | Prefixed by object type, such as `sub_4Kd9`. |
+
+## Listing
+
+List endpoints return an array under `data`:
+
+```json
+{
+  "data": [
+    { "id": "cus_7Fh2PqX9", "email": "dana@acme.dev" },
+    { "id": "cus_2Pb8xk9", "email": "sam@northwind.io" }
+  ]
+}
+```
+
+Filters are query parameters, and are documented per endpoint.
+
+## Permissions
+
+Every endpoint names the permission its key needs. A key without it is refused
+with a `permission_error` rather than quietly doing nothing. See
+[Authentication](/authentication#what-a-key-can-do).
+
+## Rate limits
+
+Endpoints are throttled per workspace. Payer-facing endpoints on the hosted
+checkout are throttled harder, because a payment reference is public and anyone
+holding the URL can call them. A throttled call answers `429`, and backing off
+is the right response.
+
+<CardGroup cols={2}>
+  <Card title="Products" icon="box" href="/api-reference/products">
+    What you sell.
+  </Card>
+  <Card title="Checkouts" icon="credit-card" href="/api-reference/checkouts">
+    Sessions, and the payer-facing endpoints.
+  </Card>
+  <Card title="Subscriptions" icon="repeat" href="/api-reference/subscriptions">
+    Recurring billing.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/api-reference/webhooks">
+    Endpoints, deliveries and events.
+  </Card>
+</CardGroup>

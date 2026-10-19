@@ -1,0 +1,113 @@
+---
+title: "Checkouts"
+description: "Create a session, and the endpoints the hosted page itself uses."
+---
+
+## Create a checkout session
+
+```http
+POST /v1/checkouts
+```
+
+Permission: `checkout:write`
+
+| Parameter | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `price_id` | string | One of these | A price from your catalog. |
+| `amount` | string | One of these | A one-off amount not in your catalog. |
+| `networks` | array | No | Narrow the networks for this session. |
+| `customer` | object | No | `email`, `name`, or an existing customer id. |
+| `fee_payer` | string | No | `merchant` by default, or `customer` to pass the fee on. |
+| `expires_in` | integer | No | Seconds until the session expires. |
+| `metadata` | object | No | Returned on the session and on its events. |
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "networks": ["base"],
+    "customer": { "email": "dana@acme.dev" },
+    "expires_in": 3600
+  }'
+```
+
+```json 201 Created
+{
+  "data": {
+    "id": "chk_7Fh2PqX9Lm",
+    "status": "open",
+    "amount": "29.00",
+    "currency": "USDC",
+    "network": "base",
+    "chain_id": 8453,
+    "networks": ["base"],
+    "url": "https://pay.reclack.com/chk_7Fh2PqX9Lm",
+    "expires_at": "2026-10-18T23:07:41Z",
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+Send your customer to `url`.
+
+## Payer-facing endpoints
+
+These are what the hosted page calls. They are anonymous, because the reference
+in the URL is the only credential a payer has, and they are throttled harder
+than the merchant endpoints for the same reason.
+
+You only need them if you are building your own payment page.
+
+### Retrieve a payable object
+
+```http
+GET /v1/checkout/{reference}
+```
+
+Resolves any reference a payer can be handed: `chk_` a checkout session,
+`plink_` a payment link, `in_` an invoice. The response carries what the page
+needs to render: the amount, the networks, the token addresses and the
+merchant's branding.
+
+### Open an attempt
+
+```http
+POST /v1/checkout/{reference}/transactions
+```
+
+Starts one payer's attempt and returns the transaction to sign against.
+
+### Confirm a payment
+
+```http
+POST /v1/checkout/{reference}/confirm
+```
+
+Records a payment the payer has already authorized onchain. The hosted page
+polls this while the transaction gains confirmations.
+
+### Read a payment
+
+```http
+GET /v1/pay/{id}
+```
+
+The payment itself, addressable by the payer. This is what survives a refresh:
+the id in the URL is enough to render the outcome with no wallet connected.
+
+```http
+POST /v1/pay/{id}/confirm
+POST /v1/pay/{id}/authorize
+```
+
+`confirm` follows the transaction to a confirmed state. `authorize` hands
+Reclack a signed one-off authorization to submit, so the payer needs no native
+token to settle.
+
+<Note>
+The hosted page is deployed against these paths. If you build your own page,
+pin to the shapes documented here rather than to anything you observe in the
+network tab.
+</Note>

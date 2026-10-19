@@ -1,0 +1,151 @@
+---
+title: "Invoices"
+description: "Create, send, chase and collect a bill."
+---
+
+## Create an invoice
+
+```http
+POST /v1/invoices
+```
+
+Permission: `invoices:write`
+
+| Parameter | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `customer_id` | string | Yes | Who is being billed. |
+| `amount` | string | Yes | Decimal string, such as `"120.00"`. |
+| `due_at` | string | Yes | RFC 3339. |
+| `networks` | array | No | Networks the customer may pay on. |
+| `network` | string | No | A single network. |
+| `memo` | string | No | Shown on the document. |
+| `footer` | string | No | Shown at the foot of the document. |
+| `tax_id` | string | No | Your tax identifier. |
+| `line_items` | array | No | `description`, `quantity`, `unit_amount`. |
+| `custom_fields` | array | No | `name` and `value` pairs for the document. |
+| `fee_payer` | string | No | `merchant` or `customer`. |
+
+```bash
+curl -X POST "https://api.reclack.com/v1/invoices" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_id": "cus_7Fh2PqX9",
+    "amount": "120.00",
+    "due_at": "2026-11-10T23:59:59Z",
+    "networks": ["base"],
+    "memo": "October retainer and platform seats",
+    "line_items": [
+      { "description": "Platform seats", "quantity": 4, "unit_amount": "20.00" },
+      { "description": "Support retainer", "quantity": 1, "unit_amount": "40.00" }
+    ]
+  }'
+```
+
+```json 201 Created
+{
+  "data": {
+    "id": "in_0182",
+    "code": "INV-00182",
+    "reference": "in_0182",
+    "status": "draft",
+    "amount": "120.00",
+    "amount_atomic": "120000000",
+    "currency": "USDC",
+    "network": "base",
+    "chain_id": 8453,
+    "reminders_enabled": false,
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+## List invoices
+
+```http
+GET /v1/invoices
+```
+
+Permission: `invoices:read`
+
+| Query parameter | Notes |
+| --- | --- |
+| `customer_id` | Only this customer's invoices. |
+| `status` | `draft`, `open`, `paid`, `overdue` or `void`. |
+
+## Retrieve an invoice
+
+```http
+GET /v1/invoices/{invoiceId}
+```
+
+Permission: `invoices:read`
+
+## Update an invoice
+
+```http
+PATCH /v1/invoices/{invoiceId}
+```
+
+Permission: `invoices:write`
+
+Drafts can be edited freely. A sent invoice is finalised, so the customer never
+sees the bill move after they received it.
+
+## Delete an invoice
+
+```http
+DELETE /v1/invoices/{invoiceId}
+```
+
+Permission: `invoices:write`
+
+Only drafts are deletable. A sent invoice is voided instead, which keeps it in
+the record.
+
+## Send an invoice
+
+```http
+POST /v1/invoices/{invoiceId}/send
+```
+
+Permission: `invoices:write`
+
+Finalises the invoice, emails it with the PDF attached, and starts reminders if
+they are enabled. The pay link in that email does not expire.
+
+## Set reminders
+
+```http
+POST /v1/invoices/{invoiceId}/reminders
+```
+
+Permission: `invoices:write`
+
+| Parameter | Type | Notes |
+| --- | --- | --- |
+| `enabled` | boolean | Reminders run before and after the due date, and stop when the invoice is paid. |
+
+## Download the PDF
+
+```http
+GET /v1/invoices/{invoiceId}/pdf
+```
+
+Permission: `invoices:read`
+
+Responds with `application/pdf`. The same document is attached to the email and
+available to the customer in the portal.
+
+## Charge an invoice
+
+```http
+POST /v1/invoices/{invoiceId}/charge
+```
+
+Permission: `invoices:write`
+
+Collects against an authorization the customer has already signed, such as the
+one behind their subscription. The collection can never exceed that
+authorization. Use this when you do not want to wait for the customer to open
+the payment page.

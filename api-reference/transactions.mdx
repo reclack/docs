@@ -1,0 +1,75 @@
+---
+title: "Transactions"
+description: "Every payment, with the chain's own record attached."
+---
+
+A transaction is a payment on a network. It is what an invoice, a checkout
+session or a collection resolves to once the chain has confirmed it.
+
+## List transactions
+
+```http
+GET /v1/transactions
+```
+
+Permission: `transactions:read`
+
+| Query parameter | Notes |
+| --- | --- |
+| `customer_id` | Only this customer's payments. |
+| `status` | Filter by state. |
+| `limit` | How many to return. |
+
+```bash
+curl "https://api.reclack.com/v1/transactions?limit=50" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+```json 200 OK
+{
+  "data": [
+    {
+      "id": "txn_2e2df306",
+      "status": "confirmed",
+      "amount": "29.00",
+      "currency": "USDC",
+      "network": "base",
+      "chain_id": 8453,
+      "hash": "0x2e2d...f306",
+      "customer_id": "cus_7Fh2PqX9",
+      "invoice_id": "in_0219",
+      "settled_to": "0x71B9...4921",
+      "confirmed_at": "2026-10-18T22:08:02Z",
+      "created_at": "2026-10-18T22:07:48Z"
+    }
+  ]
+}
+```
+
+## Retrieve a transaction
+
+```http
+GET /v1/transactions/{id}
+```
+
+Permission: `transactions:read`
+
+## Statuses
+
+| Status | Meaning |
+| --- | --- |
+| `pending` | Submitted and waiting for confirmations. |
+| `confirmed` | The chain confirmed it. This is when related objects are marked paid. |
+| `failed` | It did not settle. The reason is on the record. |
+
+<Note>
+Nothing is marked paid on submission. An invoice or a subscription period moves
+only once its transaction is confirmed, which is what keeps your ledger in
+agreement with the chain.
+</Note>
+
+## Reconciling
+
+Every transaction carries its hash and the address it settled to, so a figure
+in your books can always be traced to a block. For a month-end check, list by
+date range and compare totals per network.

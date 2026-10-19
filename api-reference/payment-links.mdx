@@ -1,0 +1,102 @@
+---
+title: "Payment links"
+description: "Create and manage shareable payment pages."
+---
+
+## Create a payment link
+
+```http
+POST /v1/payment-links
+```
+
+Permission: `payment_links:write`
+
+| Parameter | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `name` | string | Yes | What the payer sees as the line item. |
+| `type` | string | Yes | `fixed` or `custom_amount`. |
+| `price_id` | string | For `fixed` | A price from your catalog. |
+| `min_amount`, `max_amount` | string | For `custom_amount` | The range the payer may choose inside. |
+| `preset_amount` | string | No | The figure the page starts on. |
+| `network` | string | No | A single network, when the link is not built from a price. |
+| `collect_email` | boolean | No | Ask for an email. |
+| `collect_name` | boolean | No | Ask for a name. |
+| `collect_phone`, `collect_address` | boolean | No | Ask for those. |
+| `max_payments` | integer | No | Stop accepting payments after this many. |
+| `after_completion` | string | No | `message` or `redirect`. |
+| `confirmation_message` | string | No | Shown when `after_completion` is `message`. |
+| `redirect_url` | string | No | Used when `after_completion` is `redirect`. |
+| `fee_payer` | string | No | `merchant` or `customer`. |
+
+```bash
+curl -X POST "https://api.reclack.com/v1/payment-links" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium Research Access",
+    "type": "fixed",
+    "price_id": "price_7Fh2PqX9",
+    "collect_email": true,
+    "after_completion": "redirect",
+    "redirect_url": "https://acme.dev/thanks"
+  }'
+```
+
+```json 201 Created
+{
+  "data": {
+    "id": "plink_8Qd3ZkR2",
+    "name": "Premium Research Access",
+    "type": "fixed",
+    "status": "active",
+    "url": "https://pay.reclack.com/plink_8Qd3ZkR2",
+    "collect_email": true,
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+## List payment links
+
+```http
+GET /v1/payment-links
+```
+
+Permission: `payment_links:read`
+
+## Retrieve a payment link
+
+```http
+GET /v1/payment-links/{id}
+```
+
+Permission: `payment_links:read`
+
+## Update a payment link
+
+```http
+PATCH /v1/payment-links/{id}
+```
+
+Permission: `payment_links:write`
+
+Use this to deactivate a link, which closes it while keeping every payment it
+has taken:
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/payment-links/plink_8Qd3ZkR2" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "inactive" }'
+```
+
+## Delete a payment link
+
+```http
+DELETE /v1/payment-links/{id}
+```
+
+Permission: `payment_links:write`
+
+Deleting removes the link and its history. Deactivate instead unless the link
+never took a payment.

@@ -1,0 +1,157 @@
+---
+title: "Webhooks"
+description: "Endpoints, secrets, deliveries and the event log."
+---
+
+See [Webhooks](/webhooks/overview) for the concepts, and
+[Verifying](/webhooks/verifying) for the signature.
+
+## Create an endpoint
+
+```http
+POST /v1/webhooks
+```
+
+Permission: `webhooks:write`
+
+| Parameter | Type | Required | Notes |
+| --- | --- | --- | --- |
+| `url` | string | Yes | Where deliveries are sent. HTTPS. |
+| `event_types` | array | Yes | The types this endpoint wants. Unknown types are refused. |
+| `description` | string | No | For your own reference in the dashboard. |
+
+```bash
+curl -X POST "https://api.reclack.com/v1/webhooks" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://acme.dev/hooks/reclack",
+    "event_types": ["subscription.renewed", "invoice.paid", "payment.failed"]
+  }'
+```
+
+```json 201 Created
+{
+  "data": {
+    "id": "whe_7Fh2PqX9",
+    "url": "https://acme.dev/hooks/reclack",
+    "status": "active",
+    "secret": "whsec_9f1c4a2b8e7d0356",
+    "event_types": ["subscription.renewed", "invoice.paid", "payment.failed"],
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+<Warning>
+`secret` appears in this response only. Store it before you close the terminal.
+</Warning>
+
+## List endpoints
+
+```http
+GET /v1/webhooks
+```
+
+Permission: `webhooks:read`
+
+## Update an endpoint
+
+```http
+PATCH /v1/webhooks/{endpointId}
+```
+
+Permission: `webhooks:write`
+
+| Parameter | Notes |
+| --- | --- |
+| `url` | Move the endpoint. |
+| `event_types` | Replace the subscription list. |
+| `status` | `active` or `paused`. Resume a paused endpoint here. |
+
+## Delete an endpoint
+
+```http
+DELETE /v1/webhooks/{endpointId}
+```
+
+Permission: `webhooks:write`
+
+## Roll the signing secret
+
+```http
+POST /v1/webhooks/{endpointId}/secret
+```
+
+Permission: `webhooks:write`
+
+Returns a new secret, shown once. Deploy it to your service, then confirm
+deliveries are verifying again.
+
+## List deliveries
+
+```http
+GET /v1/webhook-deliveries
+```
+
+Permission: `webhooks:read`
+
+| Query parameter | Notes |
+| --- | --- |
+| `endpoint_id` | Only this endpoint's deliveries. |
+| `status` | Filter by outcome. |
+| `event_id` | Every attempt for one event. |
+
+```json 200 OK
+{
+  "data": [
+    {
+      "id": "whd_8Qd3",
+      "endpoint_id": "whe_7Fh2PqX9",
+      "event_id": "evt_4Kd9ZmPq",
+      "event_type": "subscription.renewed",
+      "status": "succeeded",
+      "attempt": 2,
+      "response_status": 200,
+      "duration_ms": 118,
+      "delivered_at": "2026-10-18T22:08:26Z"
+    }
+  ]
+}
+```
+
+Response bodies are captured, up to a couple of kilobytes, so you can see what
+your endpoint actually said.
+
+## Retry a delivery
+
+```http
+POST /v1/webhook-deliveries/{deliveryId}/retry
+```
+
+Permission: `webhooks:write`
+
+Sends the same event again, immediately. Useful after fixing a handler.
+
+## List events
+
+```http
+GET /v1/events
+```
+
+Permission: `webhooks:read`
+
+Everything Reclack has emitted for your workspace, whether or not an endpoint
+existed at the time. This is the easiest way to see payloads while you are
+still building.
+
+## List event types
+
+```http
+GET /v1/event-types
+```
+
+Permission: `webhooks:read`
+
+The types available to subscribe to, in the order the dashboard lists them.
+Useful for building a settings screen that does not drift.
