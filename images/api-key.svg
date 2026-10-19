@@ -34,7 +34,7 @@
     <text class="who" x="140" y="222">SEND IT IN THIS HEADER</text>
     <rect x="140" y="236" width="133.2" height="21" rx="10.5" fill="#ece9ff"/>
     <text class="m" x="149" y="250.5" font-size="11" fill="#533afd" font-weight="600">Api-Key: rk_live_…</text>
-    <text class="note" x="300" y="251">X-API-Key and Authorization: Bearer are accepted too.</text>
+    <text class="note" x="300" y="251">X-API-Key is accepted too.</text>
     <text class="note" x="140" y="286">The secret half is shown once, at creation. Reclack stores only a digest of it.</text>
   </g>
 </svg>
