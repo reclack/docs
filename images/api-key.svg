@@ -31,13 +31,10 @@
     <path d="M221,148 v30 h40" stroke="#e2def2" stroke-width="1.5" fill="none"/>
     <text class="note" x="268" y="182">Environment: sandbox or live</text>
     <text class="note" x="477" y="168" text-anchor="middle">32 random characters</text>
-    <text class="who" x="140" y="222">SEND IT ANY OF THESE WAYS</text>
-    <rect x="140" y="236" width="165.2" height="21" rx="10.5" fill="#ece9ff"/>
-    <text class="m" x="149" y="250.5" font-size="11" fill="#533afd" font-weight="600">Authorization: Bearer …</text>
-    <rect x="340" y="236" width="94.8" height="21" rx="10.5" fill="#ece9ff"/>
-    <text class="m" x="349" y="250.5" font-size="11" fill="#533afd" font-weight="600">X-API-Key: …</text>
-    <rect x="540" y="236" width="82.0" height="21" rx="10.5" fill="#ece9ff"/>
-    <text class="m" x="549" y="250.5" font-size="11" fill="#533afd" font-weight="600">Api-Key: …</text>
+    <text class="who" x="140" y="222">SEND IT IN THIS HEADER</text>
+    <rect x="140" y="236" width="133.2" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="m" x="149" y="250.5" font-size="11" fill="#533afd" font-weight="600">Api-Key: rk_live_…</text>
+    <text class="note" x="300" y="251">X-API-Key and Authorization: Bearer are accepted too.</text>
     <text class="note" x="140" y="286">The secret half is shown once, at creation. Reclack stores only a digest of it.</text>
   </g>
 </svg>
