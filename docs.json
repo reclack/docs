@@ -7,7 +7,7 @@
     "light": "#8f7dff",
     "dark": "#3b28c9"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.ico",
   "navigation": {
     "tabs": [
       {
@@ -64,7 +64,9 @@
         "groups": [
           {
             "group": "Overview",
-            "pages": ["api-reference/introduction"]
+            "pages": [
+              "api-reference/introduction"
+            ]
           },
           {
             "group": "Catalog",
@@ -134,7 +136,13 @@
     }
   },
   "contextual": {
-    "options": ["copy", "view", "claude", "chatgpt", "mcp"]
+    "options": [
+      "copy",
+      "view",
+      "claude",
+      "chatgpt",
+      "mcp"
+    ]
   },
   "footer": {
     "socials": {
