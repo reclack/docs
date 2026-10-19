@@ -8,7 +8,8 @@ payer's browser exposes, lets them pick a network you accept, and states in
 words what they are approving before anything is signed.
 
 <Frame caption="One checkout, from your server to the chain and back">
-  <img src="/images/checkout-flow.svg" alt="Your server creates a session. The payer opens the page and picks a wallet. The wallet signs a bounded approval and today's payment. The chain confirms. Your server receives the events." />
+  <img className="block dark:hidden" src="/images/checkout-flow.svg" alt="Your server creates a session. The payer opens the page and picks a wallet. The wallet signs a bounded approval and today's payment. The chain confirms. Your server receives the events." />
+  <img className="hidden dark:block" src="/images/checkout-flow-dark.svg" alt="Your server creates a session. The payer opens the page and picks a wallet. The wallet signs a bounded approval and today's payment. The chain confirms. Your server receives the events." />
 </Frame>
 
 ## Creating a session

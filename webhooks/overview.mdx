@@ -8,7 +8,8 @@ collection confirms three blocks later, a retry succeeds on day six. Webhooks
 are how your application hears about all of it without polling.
 
 <Frame caption="Delivery is retried until your endpoint answers">
-  <img src="/images/webhook-delivery.svg" alt="An event delivered three times, failing twice with 502 and succeeding with 200 on the third attempt." />
+  <img className="block dark:hidden" src="/images/webhook-delivery.svg" alt="An event delivered three times, failing twice with 502 and succeeding with 200 on the third attempt." />
+  <img className="hidden dark:block" src="/images/webhook-delivery-dark.svg" alt="An event delivered three times, failing twice with 502 and succeeding with 200 on the third attempt." />
 </Frame>
 
 ## Setting up an endpoint

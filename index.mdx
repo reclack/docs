@@ -9,7 +9,8 @@ billing period, submits the collection onchain, follows the transaction to a
 confirmed state, and tells your application what happened.
 
 <Frame caption="Money moves from your customer's wallet to an address you control">
-  <img src="/images/money-path.svg" alt="A customer wallet on the left, Reclack in the middle opening periods and submitting collections, and your own settlement address on the right." />
+  <img className="block dark:hidden" src="/images/money-path.svg" alt="A customer wallet on the left, Reclack in the middle opening periods and submitting collections, and your own settlement address on the right." />
+  <img className="hidden dark:block" src="/images/money-path-dark.svg" alt="A customer wallet on the left, Reclack in the middle opening periods and submitting collections, and your own settlement address on the right." />
 </Frame>
 
 You can use as much or as little of it as you need. Some teams only create
