@@ -69,35 +69,119 @@
             ]
           },
           {
-            "group": "Catalog",
+            "group": "Products",
             "pages": [
-              "api-reference/products",
-              "api-reference/prices"
+              "api-reference/products/create",
+              "api-reference/products/list",
+              "api-reference/products/get",
+              "api-reference/products/update",
+              "api-reference/products/delete"
             ]
           },
           {
-            "group": "Customers and billing",
+            "group": "Prices",
             "pages": [
-              "api-reference/customers",
-              "api-reference/subscriptions",
-              "api-reference/usage",
-              "api-reference/invoices"
+              "api-reference/prices/create",
+              "api-reference/prices/list",
+              "api-reference/prices/get",
+              "api-reference/prices/update",
+              "api-reference/prices/delete"
             ]
           },
           {
-            "group": "Payments",
+            "group": "Customers",
             "pages": [
-              "api-reference/checkouts",
-              "api-reference/payment-links",
-              "api-reference/transactions"
+              "api-reference/customers/create",
+              "api-reference/customers/list",
+              "api-reference/customers/get"
             ]
           },
           {
-            "group": "Platform",
+            "group": "Subscriptions",
             "pages": [
-              "api-reference/webhooks",
-              "api-reference/credentials",
-              "api-reference/settlement-accounts"
+              "api-reference/subscriptions/list",
+              "api-reference/subscriptions/get"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "api-reference/usage/record"
+            ]
+          },
+          {
+            "group": "Invoices",
+            "pages": [
+              "api-reference/invoices/create",
+              "api-reference/invoices/list",
+              "api-reference/invoices/get",
+              "api-reference/invoices/update",
+              "api-reference/invoices/delete",
+              "api-reference/invoices/send",
+              "api-reference/invoices/reminders",
+              "api-reference/invoices/pdf",
+              "api-reference/invoices/charge"
+            ]
+          },
+          {
+            "group": "Checkouts",
+            "pages": [
+              "api-reference/checkouts/create",
+              "api-reference/checkouts/payer-get",
+              "api-reference/checkouts/payer-transaction",
+              "api-reference/checkouts/payer-confirm",
+              "api-reference/checkouts/payer-payment",
+              "api-reference/checkouts/payer-payment-confirm",
+              "api-reference/checkouts/payer-authorize"
+            ]
+          },
+          {
+            "group": "Payment links",
+            "pages": [
+              "api-reference/payment-links/create",
+              "api-reference/payment-links/list",
+              "api-reference/payment-links/get",
+              "api-reference/payment-links/update",
+              "api-reference/payment-links/delete"
+            ]
+          },
+          {
+            "group": "Transactions",
+            "pages": [
+              "api-reference/transactions/list",
+              "api-reference/transactions/get"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api-reference/webhooks/create-endpoint",
+              "api-reference/webhooks/list-endpoints",
+              "api-reference/webhooks/update-endpoint",
+              "api-reference/webhooks/delete-endpoint",
+              "api-reference/webhooks/roll-secret",
+              "api-reference/webhooks/list-deliveries",
+              "api-reference/webhooks/retry-delivery",
+              "api-reference/webhooks/list-events",
+              "api-reference/webhooks/list-event-types"
+            ]
+          },
+          {
+            "group": "API keys",
+            "pages": [
+              "api-reference/credentials/create",
+              "api-reference/credentials/list",
+              "api-reference/credentials/revoke"
+            ]
+          },
+          {
+            "group": "Settlement",
+            "pages": [
+              "api-reference/settlement/create",
+              "api-reference/settlement/list",
+              "api-reference/settlement/get",
+              "api-reference/settlement/update",
+              "api-reference/settlement/balances"
             ]
           }
         ]
