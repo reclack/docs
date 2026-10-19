@@ -1,0 +1,13 @@
+/*
+ * Reference parameter names.
+ *
+ * Mintlify paints field names in the brand colour, which reads like a link in
+ * a column of plain field names. They are labels, so they wear ink.
+ */
+.font-semibold.text-primary.overflow-wrap-anywhere {
+	color: #374151;
+}
+
+.dark .font-semibold.text-primary.overflow-wrap-anywhere {
+	color: #d4d4d8;
+}
