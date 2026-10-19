@@ -11,3 +11,24 @@
 .dark .font-semibold.text-primary.overflow-wrap-anywhere {
 	color: #d4d4d8;
 }
+
+/*
+ * Dark mode neutrals.
+ *
+ * The theme derives its grey ramp from the brand purple, which leaves every
+ * dark surface faintly violet. These steps are a neutral slate, so the page
+ * reads as black and the purple is left to do accent work.
+ */
+.dark {
+	--gray-50: 248 250 252;
+	--gray-100: 241 245 249;
+	--gray-200: 226 232 240;
+	--gray-300: 203 213 225;
+	--gray-400: 148 163 184;
+	--gray-500: 100 116 139;
+	--gray-600: 71 85 105;
+	--gray-700: 51 65 85;
+	--gray-800: 28 34 45;
+	--gray-900: 20 23 29;
+	--gray-950: 11 13 17;
+}
