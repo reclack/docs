@@ -1,0 +1,10 @@
+---
+title: "Create Product"
+openapi: "POST /v1/products"
+---
+
+## Overview
+
+Create a product, which is the thing you sell. You can create its first price
+in the same call by nesting a `price` object, which saves a round trip for the
+common case.

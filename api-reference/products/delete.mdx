@@ -1,0 +1,10 @@
+---
+title: "Delete Product"
+openapi: "DELETE /v1/products/{productId}"
+---
+
+## Overview
+
+Delete a product. Only a product with no history can be deleted, which the
+`deletable` field tells you in advance. Anything that has been sold should be
+deactivated instead, so your reporting keeps working.

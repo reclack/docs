@@ -1,0 +1,10 @@
+---
+title: "Send Invoice"
+openapi: "POST /v1/invoices/{invoiceId}/send"
+---
+
+## Overview
+
+Send the invoice. This finalises it, emails it to the customer with the PDF
+attached, and starts the reminder schedule if reminders are enabled. The pay
+link in that email does not expire.

@@ -1,0 +1,10 @@
+---
+title: "Confirm Payment"
+openapi: "POST /v1/checkout/{reference}/confirm"
+---
+
+## Overview
+
+Record a payment the payer has already authorized onchain. The hosted page
+polls this while the transaction gains confirmations, so calling it repeatedly
+is safe and does not submit anything twice.

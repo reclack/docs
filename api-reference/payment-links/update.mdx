@@ -1,0 +1,10 @@
+---
+title: "Update Payment Link"
+openapi: "PATCH /v1/payment-links/{id}"
+---
+
+## Overview
+
+Update a payment link. Setting `status` to `inactive` closes it while keeping
+every payment it has taken, which is what you want for reporting on a quarter
+that has ended.

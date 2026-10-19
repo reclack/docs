@@ -1,0 +1,11 @@
+---
+title: "Record Usage"
+openapi: "POST /v1/subscriptions/{subscriptionId}/usage"
+---
+
+## Overview
+
+Record usage for a metered subscription. The `idempotency_key` is required so
+a retried report cannot bill a customer twice. Derive it from the thing being
+reported, such as the subscription and the window, rather than generating a
+random one.

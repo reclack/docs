@@ -1,0 +1,11 @@
+---
+title: "Charge Invoice"
+openapi: "POST /v1/invoices/{invoiceId}/charge"
+---
+
+## Overview
+
+Collect the invoice against an authorization the customer has already signed,
+such as the one behind their subscription. The collection can never exceed
+that authorization. Use this when you do not want to wait for the customer to
+open the payment page.

@@ -1,0 +1,9 @@
+---
+title: "Retry Webhook Delivery"
+openapi: "POST /v1/webhook-deliveries/{deliveryId}/retry"
+---
+
+## Overview
+
+Send the same event again, immediately. This is what you reach for after
+fixing a handler, so a bad deploy does not cost you a day of events.

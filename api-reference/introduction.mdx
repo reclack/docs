@@ -1,67 +1,77 @@
 ---
-title: "API reference"
-description: "Conventions that hold across every endpoint."
+title: "Introduction"
+description: "How to call the Reclack API, and what comes back."
 ---
 
-The Reclack API is REST over HTTPS, with JSON in and JSON out. Resources have
-predictable URLs, and responses carry the object under `data`.
+The Reclack API takes recurring and one-time stablecoin payments straight from
+your customers' wallets. Everything in this reference is a real endpoint on
+`https://api.reclack.com`, and every page here carries a playground you can
+send a live request from.
+
+Reclack is non-custodial. Payments move from a customer's wallet to a
+settlement address you control. Reclack never holds your funds, and never asks
+anyone for a seed phrase or a private key.
+
+## Base URL
 
 ```
 https://api.reclack.com
 ```
 
-## Conventions
+There is one base URL. Your key decides whether you are working against test
+chains or production, so you never change hostnames between environments.
 
-| Convention | Detail |
-| --- | --- |
-| Authentication | `Authorization: Bearer rk_live_...`. See [Authentication](/authentication). |
-| Environment | Decided by the key prefix, not by the host. |
-| Content type | `application/json` on requests with a body. |
-| Success | `200` for reads and updates, `201` for creates. |
-| Envelope | `{ "data": ... }` on success, `{ "error": { ... } }` on failure. |
-| Amounts | Decimal strings, such as `"29.00"`. Stored internally in atomic units. |
-| Timestamps | RFC 3339 in UTC, such as `2026-10-18T22:07:41Z`. |
-| Ids | Prefixed by object type, such as `sub_4Kd9`. |
+## Authentication
 
-## Listing
+Send your API key as a bearer token.
 
-List endpoints return an array under `data`:
+```bash
+curl https://api.reclack.com/v1/products \
+  -H "Authorization: Bearer rk_live_your_key_here"
+```
+
+`X-API-Key` and `Api-Key` work too, if one of them fits your stack better. The
+prefix tells you which environment you are in: `rk_sandbox_` for test chains,
+`rk_live_` for production. See [Authentication](/authentication) for how keys
+are issued and rotated.
+
+## Responses
+
+A successful call returns the object, or a list of them, under `data`.
 
 ```json
 {
-  "data": [
-    { "id": "cus_7Fh2PqX9", "email": "dana@acme.dev" },
-    { "id": "cus_2Pb8xk9", "email": "sam@northwind.io" }
-  ]
+  "data": {
+    "id": "prod_2Pb8xk9",
+    "name": "Pro Plan"
+  }
 }
 ```
 
-Filters are query parameters, and are documented per endpoint.
+An error returns a `type`, an optional `code`, and a message written for a
+person rather than a parser.
 
-## Permissions
+```json
+{
+  "error": {
+    "type": "invalid_request_error",
+    "code": "price_not_found",
+    "message": "No price was found for that id"
+  }
+}
+```
 
-Every endpoint names the permission its key needs. A key without it is refused
-with a `permission_error` rather than quietly doing nothing. See
-[Authentication](/authentication#what-a-key-can-do).
+[Errors](/errors) lists every type and what to do about each one.
 
-## Rate limits
+## Amounts
 
-Endpoints are throttled per workspace. Payer-facing endpoints on the hosted
-checkout are throttled harder, because a payment reference is public and anyone
-holding the URL can call them. A throttled call answers `429`, and backing off
-is the right response.
+Amounts are decimal strings, such as `"29.00"`, and most objects also carry the
+same figure in the token's atomic units. Strings rather than numbers, because a
+float cannot hold money without eventually losing a fraction of a cent.
 
-<CardGroup cols={2}>
-  <Card title="Products" icon="box" href="/api-reference/products">
-    What you sell.
-  </Card>
-  <Card title="Checkouts" icon="credit-card" href="/api-reference/checkouts">
-    Sessions, and the payer-facing endpoints.
-  </Card>
-  <Card title="Subscriptions" icon="repeat" href="/api-reference/subscriptions">
-    Recurring billing.
-  </Card>
-  <Card title="Webhooks" icon="bell" href="/api-reference/webhooks">
-    Endpoints, deliveries and events.
-  </Card>
-</CardGroup>
+## Idempotency
+
+Anything that moves money can be retried safely. Usage reporting takes an
+`idempotency_key` you choose, and payment confirmation reads what the chain
+shows rather than trusting the caller. [Idempotency](/idempotency) covers how to
+pick a key.

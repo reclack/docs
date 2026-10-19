@@ -1,0 +1,9 @@
+---
+title: "Confirm Payment By Id"
+openapi: "POST /v1/pay/{id}/confirm"
+---
+
+## Overview
+
+Follow a payment to a confirmed state. Reclack reads what the chain shows
+rather than trusting the caller, so this is safe to poll.

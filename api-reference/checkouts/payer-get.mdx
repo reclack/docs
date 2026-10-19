@@ -1,0 +1,12 @@
+---
+title: "Retrieve Payable Object"
+openapi: "GET /v1/checkout/{reference}"
+---
+
+## Overview
+
+Resolve any reference a payer can be handed: `chk_` a checkout session,
+`plink_` a payment link, `in_` an invoice. The response carries what a payment
+page needs to render. This endpoint is anonymous, because the reference in the
+URL is the only credential a payer has, and it is throttled accordingly. You
+only need it if you are building your own payment page.
