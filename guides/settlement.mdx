@@ -1,0 +1,80 @@
+---
+title: "Settlement"
+description: "Where the money lands, and what Reclack does not do with it."
+---
+
+Payments move from your customer's wallet to an address you control, on the
+network they paid on. Reclack never takes custody, never pools funds and never
+holds a balance between you and your customer.
+
+## Registering an address
+
+You need one address per network you accept.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/merchants/mer_2Pb8/settlement-accounts" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "network": "base",
+    "address": "0x71B9a0C4f3b1d8e2A5c7E9f0B4d6A8c2E1f34921",
+    "label": "Settlement"
+  }'
+```
+
+<Warning>
+Check the address character by character. A payment sent to an address you do
+not control is gone, and neither Reclack nor the network can recover it.
+</Warning>
+
+## Changing an address
+
+Changing where a network settles affects future payments only. Nothing already
+sold changes, and nothing already settled moves.
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/merchants/mer_2Pb8/settlement-accounts/acct_4Kd9" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "address": "0x29C4f1B8e7A0d3C6b5E2a9F4c8D1e0A71053" }'
+```
+
+## Fees
+
+The platform fee comes out of your share by default, so the payer is charged
+exactly the price they were quoted.
+
+If you would rather pass it on, set `fee_payer` to `customer` on the checkout,
+link or invoice. The hosted page then shows the fee as its own line, so the
+larger figure has a stated reason rather than appearing as an unexplained
+difference.
+
+| `fee_payer` | Payer is charged | You receive |
+| --- | --- | --- |
+| `merchant` (default) | The list price | The list price minus the fee |
+| `customer` | The list price plus the fee | The list price |
+
+## Network fees
+
+Where a transaction needs a network fee, that is a cost of the chain rather
+than a charge by Reclack. For many flows the payer does not need the native
+token at all, because the wallet signs an authorization and Reclack submits the
+transaction.
+
+## Reconciliation
+
+Every payment carries its transaction hash and an explorer link. Nothing is
+marked paid until the chain confirms it, so your ledger agrees with the chain
+rather than with an optimistic guess.
+
+```bash
+curl "https://api.reclack.com/v1/transactions?limit=50" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+## Refunds
+
+A confirmed transaction is final, and there is no chargeback mechanism on this
+rail. If you agree to refund a customer, you send funds back from an address
+you control. Reclack can record that against the payment, but it does not move
+the money for you.

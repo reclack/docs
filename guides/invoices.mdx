@@ -1,0 +1,108 @@
+---
+title: "Invoices"
+description: "Send a real bill, chase it on a schedule, and reconcile the payment."
+---
+
+An invoice is a document, not a payment request. It carries line items, a memo,
+a tax identifier, a due date and a PDF, and it is paid from a wallet through
+the same hosted page as everything else.
+
+## Creating one
+
+```bash
+curl -X POST "https://api.reclack.com/v1/invoices" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_id": "cus_7Fh2PqX9",
+    "amount": "120.00",
+    "due_at": "2026-11-10T23:59:59Z",
+    "networks": ["base", "ethereum"],
+    "memo": "October retainer and platform seats",
+    "tax_id": "GB123456789",
+    "line_items": [
+      { "description": "Platform seats", "quantity": 4, "unit_amount": "20.00" },
+      { "description": "Support retainer", "quantity": 1, "unit_amount": "40.00" }
+    ]
+  }'
+```
+
+A new invoice starts as a draft. Drafts can be edited freely, which is the
+point of them: a sent invoice must not move under the customer who received it.
+
+## Sending it
+
+```bash
+curl -X POST "https://api.reclack.com/v1/invoices/in_0182/send" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+Sending does three things. It finalises the invoice, emails it to the customer
+with the PDF attached, and starts the reminder schedule if you enabled one.
+
+<Note>
+The pay link on an invoice does not expire. An invoice found in an old inbox
+opens on the payment, or on its receipt if it has already been settled.
+</Note>
+
+## Reminders
+
+```bash
+curl -X POST "https://api.reclack.com/v1/invoices/in_0182/reminders" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "enabled": true }'
+```
+
+Reminders run before the due date and after it, and they stop the moment the
+invoice is paid. Nobody gets chased for money they already sent.
+
+## Getting the document
+
+```bash
+curl "https://api.reclack.com/v1/invoices/in_0182/pdf" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  --output INV-00182.pdf
+```
+
+The same PDF is attached to the email and available to the customer in the
+portal.
+
+## Charging an invoice directly
+
+If the customer already has an authorization in place, such as one from a
+subscription, you can collect against it rather than waiting for them to open
+the page:
+
+```bash
+curl -X POST "https://api.reclack.com/v1/invoices/in_0182/charge" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+The collection runs against the signed authorization, and can never exceed it.
+
+## Statuses
+
+| Status | Meaning |
+| --- | --- |
+| `draft` | Created, editable, not sent. |
+| `open` | Sent and awaiting payment. |
+| `paid` | A transaction confirmed onchain and the invoice was reconciled. |
+| `overdue` | Past its due date and still open. Emits `invoice.overdue`. |
+| `void` | Cancelled. Kept for the record rather than deleted. |
+
+<Warning>
+An invoice is marked paid only after the chain confirms the transaction.
+Nothing is marked paid on submission, which is why your ledger agrees with the
+chain rather than with an optimistic guess.
+</Warning>
+
+## Events
+
+| Event | When |
+| --- | --- |
+| `invoice.paid` | The payment confirmed and the invoice was reconciled. |
+| `invoice.overdue` | The due date passed with the invoice still open. |
+| `payment.succeeded` | The transaction behind the payment confirmed. |
+
+Full parameters are in the [invoices reference](/api-reference/invoices).

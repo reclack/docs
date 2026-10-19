@@ -1,0 +1,96 @@
+---
+title: "How the objects fit"
+description: "Products, prices, customers, checkouts, subscriptions, invoices and transactions."
+---
+
+Reclack has a small object model, and most integrations only touch four or five
+of these. This page is the map.
+
+<Frame caption="The objects, and how one leads to the next">
+  <img src="/images/object-model.svg" alt="Product has prices. A price builds a checkout session. A customer pays it. That starts a subscription, which opens an invoice per period, settled by an onchain transaction." />
+</Frame>
+
+## The catalog
+
+A **product** is what you sell. A **price** says what it costs, how often it is
+billed, and which networks it can settle on. One product can carry several
+prices, which is how you offer monthly and yearly, or the same plan on
+different networks.
+
+```json
+{
+  "name": "Pro Plan",
+  "price": {
+    "amount": "29.00",
+    "cadence": "monthly",
+    "networks": ["base", "ethereum"]
+  }
+}
+```
+
+Prices are records rather than constants in your code. Changing what you charge
+is creating a new price and pointing new customers at it, which leaves existing
+subscriptions on the terms they agreed to.
+
+## The people
+
+A **customer** is who is paying. Give it your own `external_id` when you create
+it, and you can find it later without storing our id anywhere.
+
+Everything a customer does hangs off that record: their subscriptions, their
+invoices, their payments and what they see in the portal.
+
+## The payment
+
+A **checkout session** is a hosted page your customer opens. It carries your
+branding, lists the wallets their browser exposes, and explains the approval in
+plain words before anything is signed.
+
+Two other objects do a similar job in a different shape:
+
+| Object | Use it when |
+| --- | --- |
+| Checkout session | Your application decides who is paying and for what. |
+| Payment link | You want a URL you can share, with no code to deploy. |
+| Invoice | You are billing a specific customer for a specific amount, with a document. |
+
+All three end in the same place: a transaction onchain, settled to an address
+you control.
+
+## The recurring part
+
+When a customer completes a recurring checkout, they sign one bounded
+authorization and a **subscription** starts. From then on, Reclack opens an
+**invoice** for each billing period, submits the collection against the
+authorization, and follows the **transaction** until the chain confirms it.
+
+<Note>
+The authorization covers about twelve periods and is revocable by the customer
+from their own wallet. A collection can never exceed it, and Reclack never asks
+for an unlimited allowance.
+</Note>
+
+## Identifiers
+
+Ids carry a prefix that says what they are, which makes a log line readable
+without a lookup.
+
+| Prefix | Object |
+| --- | --- |
+| `prod_` | Product |
+| `price_` | Price |
+| `cus_` | Customer |
+| `chk_` | Checkout session |
+| `plink_` | Payment link |
+| `in_` | Invoice |
+| `sub_` | Subscription |
+| `txn_` | Transaction |
+
+## Amounts
+
+Amounts are decimal strings in the response, such as `"29.00"`, and are stored
+internally as integers in the token's own atomic units. Floating point never
+touches a figure that will be charged.
+
+When you send an amount, send it as a string too. `"29.00"` is unambiguous in a
+way that `29.0` is not.

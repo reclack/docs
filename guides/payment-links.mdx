@@ -1,0 +1,116 @@
+---
+title: "Payment links"
+description: "A shareable page that takes a payment, with nothing to deploy."
+---
+
+A payment link is a URL you can put anywhere: a post, a DM, an email footer, a
+button in your product. It opens the same hosted page a checkout session does,
+and every payment through it arrives attached to a customer.
+
+## Creating a link
+
+```bash
+curl -X POST "https://api.reclack.com/v1/payment-links" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium Research Access",
+    "type": "fixed",
+    "price_id": "price_7Fh2PqX9",
+    "collect_email": true,
+    "after_completion": "message",
+    "confirmation_message": "Thanks. Your access is live."
+  }'
+```
+
+```json Response
+{
+  "data": {
+    "id": "plink_8Qd3ZkR2",
+    "name": "Premium Research Access",
+    "url": "https://pay.reclack.com/plink_8Qd3ZkR2",
+    "status": "active",
+    "type": "fixed",
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+## Two shapes
+
+<Tabs>
+  <Tab title="Fixed price">
+    You set the amount. The payer sees it and pays it.
+
+    ```json
+    {
+      "name": "Premium Research Access",
+      "type": "fixed",
+      "price_id": "price_7Fh2PqX9"
+    }
+    ```
+  </Tab>
+
+  <Tab title="Payer chooses">
+    The payer names the figure, inside a range you set. Useful for tips,
+    top-ups and donations.
+
+    ```json
+    {
+      "name": "Support the project",
+      "type": "custom_amount",
+      "min_amount": "5.00",
+      "max_amount": "500.00",
+      "preset_amount": "25.00",
+      "network": "base"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+A link can also sell a recurring price. Share it once and it turns into a
+standing plan, with the same approval and collection behaviour as any other
+subscription.
+
+## What to collect
+
+Nothing is collected by default. Turn on only what you need.
+
+| Field | Effect |
+| --- | --- |
+| `collect_email` | Asks for an email. Useful for receipts your customer will look for later. |
+| `collect_name` | Asks for a name. Shown on the receipt. |
+| `collect_phone`, `collect_address` | Asks for those. Leave off unless you have a reason. |
+| `max_payments` | Stops accepting payments after this many. |
+
+Even a link that asks for nothing still records the customer, matched on the
+wallet that paid.
+
+## After the payment
+
+```json
+{
+  "after_completion": "redirect",
+  "redirect_url": "https://acme.dev/thanks"
+}
+```
+
+| `after_completion` | What happens |
+| --- | --- |
+| `message` | Reclack shows its confirmation page, with your `confirmation_message`. |
+| `redirect` | The payer is sent to your `redirect_url`. |
+
+## Closing a link
+
+Deactivate rather than delete. Closing a link keeps every payment it has ever
+taken, and your reporting for last quarter should not depend on a link you
+still have live.
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/payment-links/plink_8Qd3ZkR2" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "inactive" }'
+```
+
+Full parameters are in the [payment links reference](/api-reference/payment-links).

@@ -1,0 +1,147 @@
+---
+title: "Products and prices"
+description: "Model what you sell, and what it costs, without hard-coding either."
+---
+
+A product is the thing. A price is the deal. Keeping them apart means you can
+change what you charge without touching what you sell, and without rewriting
+your integration.
+
+## Creating a product with its first price
+
+Most of the time you want both at once, so the create call accepts a nested
+price.
+
+<CodeGroup>
+
+```bash curl
+curl -X POST "https://api.reclack.com/v1/products" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Pro Plan",
+    "description": "Everything in Starter, plus priority support",
+    "price": {
+      "amount": "29.00",
+      "cadence": "monthly",
+      "networks": ["base", "ethereum"]
+    },
+    "metadata": { "tier": "pro" }
+  }'
+```
+
+```js Node
+const product = await reclack("/v1/products", {
+  method: "POST",
+  body: {
+    name: "Pro Plan",
+    description: "Everything in Starter, plus priority support",
+    price: {
+      amount: "29.00",
+      cadence: "monthly",
+      networks: ["base", "ethereum"],
+    },
+    metadata: { tier: "pro" },
+  },
+});
+```
+
+</CodeGroup>
+
+```json Response
+{
+  "data": {
+    "id": "prod_2Pb8xk9",
+    "name": "Pro Plan",
+    "description": "Everything in Starter, plus priority support",
+    "active": true,
+    "metadata": { "tier": "pro" },
+    "prices": [
+      {
+        "id": "price_7Fh2PqX9",
+        "product_id": "prod_2Pb8xk9",
+        "amount": "29.00",
+        "currency": "USDC",
+        "cadence": "monthly",
+        "interval_seconds": 2592000,
+        "network": "base",
+        "chain_id": 8453,
+        "active": true
+      }
+    ],
+    "created_at": "2026-10-18T22:07:41Z",
+    "updated_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+## Cadences
+
+| Cadence | Bills | Typical use |
+| --- | --- | --- |
+| `once` | A single payment | One-off purchases, top-ups |
+| `daily` | Every day | Short trials, high-frequency services |
+| `weekly` | Every week | Lightweight memberships |
+| `monthly` | Every month | Most SaaS plans |
+| `yearly` | Every year | Annual plans, usually at a discount |
+
+If you need an interval the list does not cover, send `interval_seconds`
+instead and Reclack bills on that rhythm.
+
+## Adding more prices
+
+A product can carry as many prices as you need. Add a yearly option next to the
+monthly one:
+
+```bash
+curl -X POST "https://api.reclack.com/v1/products/prod_2Pb8xk9/prices" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": "290.00",
+    "cadence": "yearly",
+    "networks": ["base"]
+  }'
+```
+
+<Tip>
+Changing a price is usually the wrong instinct. Create a new one and point new
+customers at it. Existing subscriptions keep the terms their customers agreed
+to, which is what the approval in their wallet was signed against.
+</Tip>
+
+## Networks
+
+A price lists the networks it can settle on. The payer picks from that list at
+checkout, which means they can settle where their funds already are rather than
+bridging first.
+
+```json
+{
+  "amount": "29.00",
+  "cadence": "monthly",
+  "networks": ["base", "ethereum", "polygon"]
+}
+```
+
+You need a registered settlement address for each network you accept. See
+[Settlement](/guides/settlement).
+
+## Retiring a price
+
+Deactivate rather than delete where a price has history. A deleted price takes
+its reporting with it, and a subscription that referenced it becomes harder to
+explain.
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/products/prod_2Pb8xk9/prices/price_7Fh2PqX9" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "active": false }'
+```
+
+An inactive price cannot start new subscriptions. The ones already running are
+untouched.
+
+Full parameters are in the [products](/api-reference/products) and
+[prices](/api-reference/prices) reference.

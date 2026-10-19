@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img" aria-label="How Reclack objects relate">
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f7f6ff"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .name { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .meta { font-size: 11.5px; fill: #6f6b85; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .label { font-size: 11px; fill: #8a86a3; }
+      .box { fill: url(#card); stroke: #e2def2; stroke-width: 1.5; rx: 12; }
+      .accent { fill: #533afd; }
+    </style>
+  </defs>
+
+  <rect width="880" height="420" fill="#ffffff"/>
+
+  <g class="t">
+    <rect class="box" x="40" y="40" width="200" height="86"/>
+    <circle class="accent" cx="62" cy="68" r="4"/>
+    <text class="name" x="76" y="72">Product</text>
+    <text class="meta" x="60" y="96">What you sell</text>
+    <text class="meta" x="60" y="112">Name, description, metadata</text>
+
+    <rect class="box" x="40" y="176" width="200" height="86"/>
+    <circle class="accent" cx="62" cy="204" r="4"/>
+    <text class="name" x="76" y="208">Price</text>
+    <text class="meta" x="60" y="232">Amount, cadence, networks</text>
+    <text class="meta" x="60" y="248">Belongs to one product</text>
+
+    <rect class="box" x="40" y="312" width="200" height="72"/>
+    <circle class="accent" cx="62" cy="340" r="4"/>
+    <text class="name" x="76" y="344">Customer</text>
+    <text class="meta" x="60" y="368">Email, name, external id</text>
+
+    <rect class="box" x="340" y="130" width="200" height="86"/>
+    <circle class="accent" cx="362" cy="158" r="4"/>
+    <text class="name" x="376" y="162">Checkout session</text>
+    <text class="meta" x="360" y="186">A hosted page to pay on</text>
+    <text class="meta" x="360" y="202">Built from a price or amount</text>
+
+    <rect class="box" x="640" y="40" width="200" height="86"/>
+    <circle class="accent" cx="662" cy="68" r="4"/>
+    <text class="name" x="676" y="72">Subscription</text>
+    <text class="meta" x="660" y="96">One approval, many periods</text>
+    <text class="meta" x="660" y="112">Opens an invoice per period</text>
+
+    <rect class="box" x="640" y="176" width="200" height="86"/>
+    <circle class="accent" cx="662" cy="204" r="4"/>
+    <text class="name" x="676" y="208">Invoice</text>
+    <text class="meta" x="660" y="232">Line items, PDF, due date</text>
+    <text class="meta" x="660" y="248">Paid by a transaction</text>
+
+    <rect class="box" x="640" y="312" width="200" height="72"/>
+    <circle class="accent" cx="662" cy="340" r="4"/>
+    <text class="name" x="676" y="344">Transaction</text>
+    <text class="meta" x="660" y="368">Onchain, with its hash</text>
+
+    <path class="edge" d="M140 126 L140 176"/>
+    <text class="label" x="150" y="156">has prices</text>
+
+    <path class="edge" d="M240 210 L340 180"/>
+    <text class="label" x="252" y="186">priced by</text>
+
+    <path class="edge" d="M240 336 L340 200"/>
+    <text class="label" x="252" y="300">pays as</text>
+
+    <path class="edge" d="M540 150 L640 100"/>
+    <text class="label" x="552" y="112">starts</text>
+
+    <path class="edge" d="M540 180 L640 212"/>
+    <text class="label" x="552" y="206">settles</text>
+
+    <path class="edge" d="M740 126 L740 176"/>
+    <text class="label" x="750" y="156">opens</text>
+
+    <path class="edge" d="M740 262 L740 312"/>
+    <text class="label" x="750" y="292">paid by</text>
+  </g>
+</svg>

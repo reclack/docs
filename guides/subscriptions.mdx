@@ -1,0 +1,116 @@
+---
+title: "Subscriptions"
+description: "One approval, then periods that collect themselves."
+---
+
+A subscription starts when a customer completes a recurring checkout. They sign
+one bounded authorization in their own wallet, and from then on Reclack runs
+the billing against it.
+
+<Frame caption="What happens in every billing period">
+  <img src="/images/subscription-lifecycle.svg" alt="The period opens and makes one invoice. The collection runs against the signed authorization. The chain confirms. Your application receives subscription.renewed and invoice.paid." />
+</Frame>
+
+## How one starts
+
+You do not create subscriptions directly. You create a checkout session from a
+recurring price, and the subscription is what the completed checkout produces.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "networks": ["base"],
+    "customer": { "email": "dana@acme.dev" }
+  }'
+```
+
+When the payment confirms you receive `subscription.created`, carrying the
+subscription id, the customer, the amount and the next charge date.
+
+## The authorization
+
+This is the part worth understanding properly.
+
+| Property | Value |
+| --- | --- |
+| Shape | A spending limit signed in the customer's own wallet |
+| Size | A cap covering about twelve periods |
+| Never | Unlimited. Reclack does not ask for an unlimited allowance |
+| Revocable | By the customer, from their wallet, at any time |
+| Enforced | A collection can never exceed the cap |
+
+<Warning>
+Do not describe the approval to your customers as unlimited access, and do not
+build flows that depend on collecting more than the cap. If a plan grows past
+it, the customer approves the new terms.
+</Warning>
+
+## Reading a subscription
+
+```bash
+curl "https://api.reclack.com/v1/subscriptions/sub_4Kd9" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+```json Response
+{
+  "data": {
+    "id": "sub_4Kd9",
+    "status": "active",
+    "amount": "29.00",
+    "currency": "USDC",
+    "cadence": "monthly",
+    "interval_seconds": 2592000,
+    "network": "base",
+    "chain_id": 8453,
+    "started_at": "2026-08-18T22:07:41Z",
+    "current_period_start": "2026-10-18T22:07:41Z",
+    "next_charge_at": "2026-11-18T22:07:41Z"
+  }
+}
+```
+
+## Statuses
+
+| Status | Meaning |
+| --- | --- |
+| `active` | Collecting on schedule. |
+| `past_due` | A collection failed and retries are running. |
+| `paused` | Retries were exhausted. No further collections until it is resumed. |
+| `cancelled` | Ended. The customer sent it, or you did. |
+
+## When a collection fails
+
+A failure the customer can fix, such as an insufficient balance, is a schedule
+rather than an incident:
+
+1. The first attempt happens on the billing date.
+2. Further attempts are spaced over the following days, not minutes.
+3. A reminder email goes to the customer.
+4. When the schedule is exhausted, the subscription pauses instead of retrying
+   forever.
+
+Your application hears `payment.failed` for the attempts and can decide what to
+do about access. Most teams keep access during the retry window and only act
+when the subscription pauses.
+
+## Cancelling
+
+Cancelling is the customer's authority under the contract they signed. When you
+allow it, they send it from their own wallet through the
+[portal](/guides/customer-portal), and Reclack confirms the chain agreed before
+marking the subscription cancelled. Your application hears
+`subscription.cancelled`.
+
+<Tip>
+Gate access on the event rather than on a nightly job. The event tells you the
+chain has already agreed, which a job reading your own database cannot.
+</Tip>
+
+## Metered subscriptions
+
+A subscription whose price is metered bills in arrears on what you record. See
+[Usage billing](/guides/usage-billing).

@@ -1,0 +1,86 @@
+---
+title: "Customers"
+description: "Keep payments attached to a person rather than to an address."
+---
+
+A customer record is what turns a transfer into a relationship. Subscriptions,
+invoices, payments and the portal all hang off it.
+
+## Creating one
+
+```bash
+curl -X POST "https://api.reclack.com/v1/customers" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "dana@acme.dev",
+    "name": "Dana Okafor",
+    "external_id": "user_4821",
+    "metadata": { "plan": "pro", "signup_source": "docs" }
+  }'
+```
+
+Only `email` is required. Everything else is there to make the record useful to
+you later.
+
+| Field | Why you want it |
+| --- | --- |
+| `external_id` | Your own identifier. Lets you find the customer without storing our id. |
+| `name` | Shown on invoices and receipts. |
+| `metadata` | Anything your systems need to carry along. Returned on the object. |
+
+## Customers you did not create
+
+A payer who completes a checkout or pays a payment link becomes a customer
+automatically, matched on the email they gave or the wallet they paid from. You
+do not have to create the record first.
+
+This is why a payment link with no fields to fill in still produces a customer:
+the wallet is the identity.
+
+## Looking one up
+
+```bash
+curl "https://api.reclack.com/v1/customers/cus_7Fh2PqX9" \
+  -H "Authorization: Bearer $RECLACK_KEY"
+```
+
+```json Response
+{
+  "data": {
+    "id": "cus_7Fh2PqX9",
+    "email": "dana@acme.dev",
+    "name": "Dana Okafor",
+    "external_id": "user_4821",
+    "metadata": { "plan": "pro" },
+    "created_at": "2026-10-18T22:07:41Z",
+    "updated_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+## Avoiding duplicates
+
+Creating a customer is not idempotent, so a retried request can make a second
+record. Guard it with your own identifier:
+
+```js
+async function ensureCustomer(user) {
+  const { data } = await reclack(`/v1/customers?external_id=${user.id}`);
+  if (data.length > 0) return data[0];
+
+  return reclack("/v1/customers", {
+    method: "POST",
+    body: { email: user.email, name: user.name, external_id: user.id },
+  });
+}
+```
+
+## What your customer sees
+
+If you switch the [customer portal](/guides/customer-portal) on, this record is
+what they sign into. They see their own plans, invoices, receipts and payments,
+and nothing belonging to anybody else.
+
+They sign in with the wallet they paid from, so there is no password to set and
+nothing for your support team to reset.

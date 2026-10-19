@@ -1,0 +1,143 @@
+---
+title: "Hosted checkout"
+description: "Create a session, send your customer to it, and hear about the result."
+---
+
+A checkout session is a page we host and you brand. It lists the wallets the
+payer's browser exposes, lets them pick a network you accept, and states in
+words what they are approving before anything is signed.
+
+<Frame caption="One checkout, from your server to the chain and back">
+  <img src="/images/checkout-flow.svg" alt="Your server creates a session. The payer opens the page and picks a wallet. The wallet signs a bounded approval and today's payment. The chain confirms. Your server receives the events." />
+</Frame>
+
+## Creating a session
+
+<CodeGroup>
+
+```bash curl
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "networks": ["base", "ethereum"],
+    "customer": { "email": "dana@acme.dev", "name": "Dana Okafor" },
+    "expires_in": 3600,
+    "metadata": { "order_id": "ord_1982" }
+  }'
+```
+
+```js Node
+const session = await reclack("/v1/checkouts", {
+  method: "POST",
+  body: {
+    price_id: "price_7Fh2PqX9",
+    networks: ["base", "ethereum"],
+    customer: { email: "dana@acme.dev", name: "Dana Okafor" },
+    expires_in: 3600,
+    metadata: { order_id: "ord_1982" },
+  },
+});
+
+return Response.redirect(session.url, 303);
+```
+
+```python Python
+session = reclack.post(
+    "/v1/checkouts",
+    json={
+        "price_id": "price_7Fh2PqX9",
+        "networks": ["base", "ethereum"],
+        "customer": {"email": "dana@acme.dev"},
+        "expires_in": 3600,
+    },
+)
+```
+
+</CodeGroup>
+
+```json Response
+{
+  "data": {
+    "id": "chk_7Fh2PqX9Lm",
+    "status": "open",
+    "amount": "29.00",
+    "currency": "USDC",
+    "networks": ["base", "ethereum"],
+    "url": "https://pay.reclack.com/chk_7Fh2PqX9Lm",
+    "expires_at": "2026-10-18T23:07:41Z",
+    "created_at": "2026-10-18T22:07:41Z"
+  }
+}
+```
+
+Send your customer to `url`. That is the whole integration on your side.
+
+## The parameters that matter
+
+| Field | Notes |
+| --- | --- |
+| `price_id` | The price being sold. Carries the amount, the cadence and the networks it can settle on. |
+| `amount` | Use instead of `price_id` for a one-off that is not in your catalog. A decimal string. |
+| `networks` | Narrow the price's networks to the ones you want for this session. |
+| `customer` | Email, name, or an existing customer id. A new customer is created if none matches. |
+| `fee_payer` | `merchant` by default. Set to `customer` to pass the platform fee on, and the page shows it as its own line. |
+| `expires_in` | Seconds until the session expires. Omit for the default. |
+| `metadata` | Anything of yours. Returned on the session and on the events it produces. |
+
+## What the payer sees
+
+The page carries your logo, tint and button colour from your branding settings.
+For a recurring price it explains two things before anything is signed:
+
+1. The amount charged today.
+2. The spending limit being approved, which covers about twelve periods, and
+   that it is a cap rather than a charge.
+
+<Note>
+The page lists wallets the browser actually exposes, and offers a QR code to
+continue on a phone when the wallet lives there instead. It never asks for a
+seed phrase or a private key.
+</Note>
+
+## After the payment
+
+A completed session produces events. Subscribe to these rather than polling:
+
+| Event | When |
+| --- | --- |
+| `checkout.completed` | The session was paid. |
+| `payment.succeeded` | The transaction confirmed onchain. |
+| `subscription.created` | A recurring price started a subscription. |
+| `customer.created` | A new customer record was made for the payer. |
+
+```js
+// Your webhook handler
+switch (event.type) {
+  case "checkout.completed":
+    await fulfil(event.data.metadata.order_id);
+    break;
+  case "subscription.created":
+    await grantAccess(event.data.customer_id);
+    break;
+}
+```
+
+## Sessions that are interrupted
+
+A closed tab does not lose the payment. Reopening the link shows the session
+where the payer left it, and a session that already settled opens on its
+receipt rather than on a form.
+
+Sessions expire. After that the link stops accepting payments, and you create a
+new session if the customer still wants to pay.
+
+## Building your own page
+
+If you would rather host the payment experience yourself, the API returns
+everything your page needs: the amount, the networks, the token addresses and
+the authorization to sign. Reclack keeps doing the billing underneath.
+
+See the [checkouts reference](/api-reference/checkouts) for the payer-facing
+endpoints.

@@ -1,0 +1,82 @@
+---
+title: "Customer portal"
+description: "Let customers answer their own billing questions."
+---
+
+The portal is a page your customers sign into with the wallet they paid from.
+They see their plans, invoices, receipts and payments, and can cancel where you
+allow it. There is no password to set and nothing for your support team to
+reset.
+
+## Switching it on
+
+Enable it in the dashboard under **Settings**, then **Portal**, or through the
+API:
+
+```bash
+curl -X PATCH "https://api.reclack.com/v1/merchants/mer_2Pb8/portal" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": true,
+    "allow_cancellation": true,
+    "headline": "Your billing with Acme Labs"
+  }'
+```
+
+| Setting | Effect |
+| --- | --- |
+| `enabled` | Whether the portal answers at all. |
+| `allow_cancellation` | Whether customers may end a plan themselves. |
+| `headline` | The line they see at the top of the page. |
+
+## How a customer signs in
+
+They prove the wallet. The page asks them to sign a short challenge, and the
+session that comes back is scoped to that one customer's records.
+
+<Steps>
+  <Step title="They open your portal URL">
+    `https://pay.reclack.com/acme`, where `acme` is your workspace slug.
+  </Step>
+  <Step title="They connect a wallet and sign a challenge">
+    No password, no email link, no account to create.
+  </Step>
+  <Step title="The session is scoped on the server">
+    Every query is filtered by that scope on our side, not by what the page
+    happens to ask for.
+  </Step>
+</Steps>
+
+## What they can do
+
+| They can | They cannot |
+| --- | --- |
+| See every plan with your business | See anything belonging to another customer |
+| Download invoice PDFs | Change an invoice |
+| Open a receipt for any payment | Move money anywhere other than to you |
+| Follow a payment to the block explorer | |
+| Cancel a plan, when you allow it | |
+
+Cancellation is sent from their own wallet. Reclack confirms the chain agreed
+before marking the subscription cancelled, and your application hears
+`subscription.cancelled`.
+
+## Branding
+
+The portal carries the same logo, tint and button colour as your checkout,
+receipts and emails. Set it once under **Settings**, then **Branding**.
+
+<Note>
+Reclack never asks a customer for a seed phrase or a private key, in the portal
+or anywhere else. If a page claiming to be yours does, it is not ours.
+</Note>
+
+## What it saves you
+
+The portal exists to empty a specific part of your inbox:
+
+- Requests for a copy of an invoice.
+- Requests for a receipt.
+- Questions about when a plan renews.
+- Cancellations that would otherwise be a support ticket.

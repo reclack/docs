@@ -1,0 +1,114 @@
+---
+title: "Usage billing"
+description: "Record what your product served, and let the period bill itself."
+---
+
+Metered plans bill in arrears on usage you record. The meter is yours. The
+adding up, the invoice and the collection are ours.
+
+## Recording usage
+
+```bash
+curl -X POST "https://api.reclack.com/v1/subscriptions/sub_4Kd9/usage" \
+  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "quantity": 48210,
+    "idempotency_key": "sub_4Kd9:2026-10-18T22:00",
+    "recorded_at": "2026-10-18T22:00:00Z",
+    "metadata": { "meter": "api_requests" }
+  }'
+```
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `quantity` | Yes | Whole units of whatever you are metering. |
+| `idempotency_key` | Yes | Makes a retry safe. See below. |
+| `recorded_at` | No | When the usage happened. Defaults to now. |
+| `metadata` | No | Your own context, such as which meter this is. |
+
+<Warning>
+`idempotency_key` is required. Derive it from the thing being reported, such as
+the subscription and the window, rather than generating a random one. A random
+key defeats the protection, because a retry produces a different one and the
+usage is counted twice.
+</Warning>
+
+## Reporting as it happens, or in batches
+
+Both work. Pick whichever matches how your product produces the numbers.
+
+<CodeGroup>
+
+```js Continuous
+// After each billable unit of work
+await reclack(`/v1/subscriptions/${subscriptionId}/usage`, {
+  method: "POST",
+  body: {
+    quantity: 1,
+    idempotency_key: `req_${requestId}`,
+  },
+});
+```
+
+```js Batched
+// Once a minute, from your own counter
+const window = startOfMinute(new Date()).toISOString();
+
+await reclack(`/v1/subscriptions/${subscriptionId}/usage`, {
+  method: "POST",
+  body: {
+    quantity: counter.drain(),
+    idempotency_key: `${subscriptionId}:${window}`,
+    recorded_at: window,
+  },
+});
+```
+
+</CodeGroup>
+
+Batching is usually kinder to both sides. One record a minute with an
+idempotency key derived from the minute is safe to retry and cheap to send.
+
+## How the period closes
+
+When the billing period ends, Reclack totals what was recorded, applies the
+allowance and the rate from the price, and opens a real invoice with the usage
+figure on the document. The collection then runs against the authorization the
+customer already signed.
+
+```json
+{
+  "data": {
+    "id": "in_0219",
+    "status": "open",
+    "amount": "38.41",
+    "currency": "USDC",
+    "period_start": "2026-10-01T00:00:00Z",
+    "period_end": "2026-10-31T23:59:59Z",
+    "metadata": {
+      "usage_quantity": 1284922,
+      "included": 1000000,
+      "billable": 284922
+    }
+  }
+}
+```
+
+## Arithmetic
+
+Amounts live in integer atomic units from the meter to the chain. No floating
+point touches a figure that will be charged, and rounding is decided once, when
+the invoice is written. The figure on the invoice is the figure that settles.
+
+## Keeping the customer informed
+
+Running totals are visible to you in the dashboard and to your customer in the
+portal while the period is still open. A bill that arrives with no way to check
+it is a bill somebody argues with, so showing the figure as it accumulates is
+worth the small effort.
+
+<Tip>
+A metered period is still bounded by the approval the customer signed. Price
+the allowance so a usual month sits comfortably inside the cap.
+</Tip>
