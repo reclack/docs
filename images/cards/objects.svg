@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 170" width="480" height="170" role="img" aria-label="Objects wired together">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 126" width="480" height="126" role="img" aria-label="Objects wired together">
 	<defs>
 		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
 			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
 			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
 		</radialGradient>
 	</defs>
-	<g transform="translate(240.00,45.22) scale(0.6919)">
+	<g transform="translate(240.00,36.27) scale(0.4649)">
 		<ellipse cx="0.00" cy="75.00" rx="160.00" ry="62.00" fill="url(#glow)" opacity="0.5"/>
 		<polygon points="-129.90,65.00 0.00,140.00 0.00,150.00 -129.90,75.00" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
 		<polygon points="129.90,65.00 0.00,140.00 0.00,150.00 129.90,75.00" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>

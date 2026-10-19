@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 170" width="480" height="170" role="img" aria-label="Sandbox to production">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 126" width="480" height="126" role="img" aria-label="Sandbox to production">
 	<defs>
 		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
 			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
 			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
 		</radialGradient>
 	</defs>
-	<g transform="translate(205.89,25.48) scale(0.7161)">
+	<g transform="translate(217.08,23.01) scale(0.4811)">
 		<ellipse cx="0.00" cy="75.00" rx="168.00" ry="62.00" fill="url(#glow)" opacity="0.5"/>
 		<polygon points="-95.26,45.00 -34.64,80.00 -34.64,90.00 -95.26,55.00" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
 		<polygon points="38.97,37.50 -34.64,80.00 -34.64,90.00 38.97,47.50" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
