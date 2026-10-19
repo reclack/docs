@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="A panel of API calls">
+	<defs>
+		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
+			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
+			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
+		</radialGradient>
+	</defs>
+	<g transform="translate(240.00,67.80)">
+		<ellipse cx="0.00" cy="72.80" rx="158.00" ry="60.00" fill="url(#glow)" opacity="0.5"/>
+		<polygon points="-126.09,62.40 0.00,135.20 0.00,145.60 -126.09,72.80" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="126.09,62.40 0.00,135.20 0.00,145.60 126.09,72.80" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="0.00,-10.40 126.09,62.40 0.00,135.20 -126.09,62.40" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="-99.07,26.00 0.00,83.20 0.00,91.00 -99.07,33.80" fill="#4a2fe0" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="99.07,26.00 0.00,83.20 0.00,91.00 99.07,33.80" fill="#7a63ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="0.00,-31.20 99.07,26.00 0.00,83.20 -99.07,26.00" fill="#cdc4ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M0.00,-18.20 L67.55,20.80" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.9"/>
+		<path d="M-18.01,-7.80 L29.27,19.50" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.6"/>
+		<path d="M-36.03,2.60 L40.53,46.80" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.6"/>
+		<path d="M-54.04,13.00 L-18.01,33.80" stroke="#ffd9a8" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.95"/>
+		<path d="M-72.05,23.40 L-13.51,57.20" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.45"/>
+		<path d="M0.00,62.40 L0.00,33.80" stroke="#8f7dff" stroke-width="2" stroke-linecap="round" fill="none" opacity="1.0" stroke-dasharray="4 5"/>
+	</g>
+</svg>

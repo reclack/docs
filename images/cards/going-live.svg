@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="Sandbox to production">
+	<defs>
+		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
+			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
+			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
+		</radialGradient>
+	</defs>
+	<g transform="translate(192.37,41.88)">
+		<ellipse cx="0.00" cy="75.00" rx="168.00" ry="62.00" fill="url(#glow)" opacity="0.5"/>
+		<polygon points="-95.26,45.00 -34.64,80.00 -34.64,90.00 -95.26,55.00" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="38.97,37.50 -34.64,80.00 -34.64,90.00 38.97,47.50" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="-21.65,2.50 38.97,37.50 -34.64,80.00 -95.26,45.00" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="-71.45,21.25 -32.48,43.75 -32.48,66.25 -71.45,43.75" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="15.16,16.25 -32.48,43.75 -32.48,66.25 15.16,38.75" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="-23.82,-6.25 15.16,16.25 -32.48,43.75 -71.45,21.25" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M10.83,21.25 L41.14,38.75" stroke="#7a63ff" stroke-width="2.6" stroke-linecap="round" fill="none" opacity="1.0" stroke-dasharray="5 6"/>
+		<path d="M42.96,34.00 l17,10 -17,10 z" fill="#7a63ff"/>
+		<polygon points="25.98,120.00 99.59,162.50 99.59,172.50 25.98,130.00" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="190.53,110.00 99.59,162.50 99.59,172.50 190.53,120.00" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="116.91,67.50 190.53,110.00 99.59,162.50 25.98,120.00" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="49.80,68.75 101.76,98.75 101.76,148.75 49.80,118.75" fill="#e07a1f" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="166.71,61.25 101.76,98.75 101.76,148.75 166.71,111.25" fill="#ff9f45" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="114.75,31.25 166.71,61.25 101.76,98.75 49.80,68.75" fill="#ffd9a8" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+	</g>
+</svg>

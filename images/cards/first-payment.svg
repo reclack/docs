@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 250" width="480" height="250" role="img" aria-label="A payment landing">
+	<defs>
+		<radialGradient id="glow" cx="50%" cy="50%" r="50%">
+			<stop offset="0%" stop-color="#533afd" stop-opacity="0.28"/>
+			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
+		</radialGradient>
+	</defs>
+	<g transform="translate(240.00,70.66)">
+		<ellipse cx="0.00" cy="67.50" rx="150.00" ry="58.00" fill="url(#glow)" opacity="0.5"/>
+		<polygon points="-116.91,55.35 0.00,122.85 0.00,135.00 -116.91,67.50" fill="#8065ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="116.91,55.35 0.00,122.85 0.00,135.00 116.91,67.50" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<polygon points="0.00,-12.15 116.91,55.35 0.00,122.85 -116.91,55.35" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M-29.23,47.25 L-29.23,55.35 A29.23,16.88 0 0 0 29.23,55.35 L29.23,47.25 Z" fill="#7a63ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<ellipse cx="0.00" cy="47.25" rx="29.23" ry="16.88" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M-29.23,39.15 L-29.23,47.25 A29.23,16.88 0 0 0 29.23,47.25 L29.23,39.15 Z" fill="#b7a8ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<ellipse cx="0.00" cy="39.15" rx="29.23" ry="16.88" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M-29.23,31.05 L-29.23,39.15 A29.23,16.88 0 0 0 29.23,39.15 L29.23,31.05 Z" fill="#7a63ff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<ellipse cx="0.00" cy="31.05" rx="29.23" ry="16.88" fill="#efecff" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<path d="M0.00,-1.35 L0.00,27.00" stroke="#8f7dff" stroke-width="2.4" stroke-linecap="round" fill="none" opacity="1.0" stroke-dasharray="4 6"/>
+		<path d="M-29.23,-9.45 L-29.23,-1.35 A29.23,16.88 0 0 0 29.23,-1.35 L29.23,-9.45 Z" fill="#ff9f45" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+		<ellipse cx="0.00" cy="-9.45" rx="29.23" ry="16.88" fill="#ffd9a8" stroke="rgba(28,16,80,0.10)" stroke-width="0.75" stroke-linejoin="round"/>
+	</g>
+</svg>
