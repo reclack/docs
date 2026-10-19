@@ -18,7 +18,7 @@
   <rect width="880" height="330" fill="#ffffff"/>
   <g class="t">
     <rect x="40" y="50" width="330" height="230" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
-    <text class="m" x="64" y="84" font-size="13" fill=P["ink"] font-weight="600">INV-00182</text>
+    <text class="m" x="64" y="84" font-size="13" fill="#16151f" font-weight="600">INV-00182</text>
     <rect x="280" y="68" width="42.4" height="21" rx="10.5" fill="#ece9ff"/>
     <text class="t" x="289" y="82.5" font-size="11" fill="#533afd" font-weight="600">Open</text>
     <text class="note" x="64" y="106">Issued Oct 16 · due Nov 10</text>
@@ -29,7 +29,7 @@
     <text class="m" x="346" y="174" text-anchor="end" font-size="11.5" fill="#16151f">40.00</text>
     <line x1="56" y1="208" x2="354" y2="208" stroke="#e2def2" stroke-width="1.5"/>
     <text class="ttl" x="64" y="232">Total due</text>
-    <text class="m" x="346" y="232" text-anchor="end" font-size="12" fill=P["ink"] font-weight="600">120.00 USDC</text>
+    <text class="m" x="346" y="232" text-anchor="end" font-size="12" fill="#16151f" font-weight="600">120.00 USDC</text>
     <rect x="64" y="248" width="290" height="18" rx="9" fill="#533afd"/>
     <text class="t" x="209" y="261" text-anchor="middle" font-size="10.5" font-weight="600" fill="#ffffff">Pay invoice</text>
     <line x1="470" y1="90" x2="470" y2="250" stroke="#e2def2" stroke-width="2"/>
