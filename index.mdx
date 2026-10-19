@@ -8,21 +8,25 @@ one bounded approval in the wallet they already use, and Reclack opens each
 billing period, submits the collection onchain, follows the transaction to a
 confirmed state, and tells your application what happened.
 
+<Frame caption="Money moves from your customer's wallet to an address you control">
+  <img src="/images/money-path.svg" alt="A customer wallet on the left, Reclack in the middle opening periods and submitting collections, and your own settlement address on the right." />
+</Frame>
+
 You can use as much or as little of it as you need. Some teams only create
 checkout sessions. Others run their whole catalog, subscriptions, invoices and
 metered usage through the API.
 
 <CardGroup cols={2}>
-  <Card title="Take your first payment" icon="rocket" href="/quickstart">
+  <Card title="Take your first payment" img="/images/cards/first-payment.svg" href="/quickstart">
     A sandbox payment, end to end, in about ten minutes.
   </Card>
-  <Card title="How the objects fit" icon="diagram-project" href="/guides/objects">
+  <Card title="How the objects fit" img="/images/cards/objects.svg" href="/guides/objects">
     Products, prices, customers, checkouts, subscriptions and invoices.
   </Card>
-  <Card title="Authentication" icon="key" href="/authentication">
+  <Card title="Authentication" img="/images/cards/authentication.svg" href="/authentication">
     API keys, environments and the headers we accept.
   </Card>
-  <Card title="Webhooks" icon="bell" href="/webhooks/overview">
+  <Card title="Webhooks" img="/images/cards/webhooks.svg" href="/webhooks/overview">
     Signed events, retries, and how to verify them.
   </Card>
 </CardGroup>

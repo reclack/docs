@@ -6,6 +6,10 @@ description: "Create a plan, open a checkout, and take a sandbox payment."
 This walks through one complete payment in sandbox. Nothing here moves real
 money, and the same calls work against live once you swap the key.
 
+<Frame caption="The page your customer opens, carrying your name and the amount">
+  <img src="/images/hosted-checkout.svg" alt="A hosted checkout page showing the merchant name, the amount in USDC, a network choice, a list of wallets, and the pay button." />
+</Frame>
+
 <Note>
 You need a Reclack account and a sandbox API key. Create one in the dashboard
 under **Developers**, then **API keys**. Sandbox keys start with
@@ -115,16 +119,16 @@ A product with a price, a customer, a completed checkout, and a subscription
 that will collect on its own schedule. From here:
 
 <CardGroup cols={2}>
-  <Card title="Subscriptions" icon="repeat" href="/guides/subscriptions">
+  <Card title="Subscriptions" img="/images/cards/subscriptions.svg" href="/guides/subscriptions">
     What happens on every billing period, and what to do when one fails.
   </Card>
-  <Card title="Webhooks" icon="bell" href="/webhooks/overview">
+  <Card title="Webhooks" img="/images/cards/webhooks.svg" href="/webhooks/overview">
     Verify the signature and act on events safely.
   </Card>
-  <Card title="Going live" icon="plane-departure" href="/environments">
+  <Card title="Going live" img="/images/cards/going-live.svg" href="/environments">
     Swap the key, register a settlement address, and ship.
   </Card>
-  <Card title="API reference" icon="code" href="/api-reference/introduction">
+  <Card title="API reference" img="/images/cards/api-reference.svg" href="/api-reference/introduction">
     Every endpoint, with its parameters and responses.
   </Card>
 </CardGroup>

@@ -7,6 +7,10 @@ Billing happens while nobody is looking. A period opens at midnight, a
 collection confirms three blocks later, a retry succeeds on day six. Webhooks
 are how your application hears about all of it without polling.
 
+<Frame caption="Delivery is retried until your endpoint answers">
+  <img src="/images/webhook-delivery.svg" alt="An event delivered three times, failing twice with 502 and succeeding with 200 on the third attempt." />
+</Frame>
+
 ## Setting up an endpoint
 
 Create one in the dashboard under **Developers**, then **Webhooks**, or through

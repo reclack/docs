@@ -7,6 +7,10 @@ Networks fail halfway. A request times out, your worker retries, and the
 question is whether the first attempt had already done the work. Reclack
 answers that in a few places, and this page is honest about which.
 
+<Frame caption="The same key twice means one record, not two charges">
+  <img src="/images/idempotency.svg" alt="Two identical calls carrying the same idempotency key, arriving at a single stored usage record billed once." />
+</Frame>
+
 ## Usage records
 
 Recording usage takes a required `idempotency_key`. Send the same key twice and
