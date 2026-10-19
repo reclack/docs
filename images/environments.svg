@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-label="Sandbox and live, side by side">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="300" fill="#ffffff"/>
+  <g class="t">
+    <rect x="40" y="50" width="380" height="210" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="big" x="64" y="84">Sandbox</text>
+    <rect x="290" y="68" width="82.0" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="m" x="299" y="82.5" font-size="11" fill="#533afd" font-weight="600">rk_sandbox</text>
+    <line x1="40" y1="104" x2="420" y2="104" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="64" y="130">NETWORKS</text>
+    <text class="note" x="64" y="150">Base Sepolia, Ethereum Sepolia</text>
+    <circle cx="68" cy="174" r="3" fill="#533afd"/>
+    <text class="note" x="84" y="178">Test tokens from a faucet</text>
+    <circle cx="68" cy="198" r="3" fill="#533afd"/>
+    <text class="note" x="84" y="202">Same objects, same events</text>
+    <circle cx="68" cy="222" r="3" fill="#533afd"/>
+    <text class="note" x="84" y="226">Safe to break</text>
+    <rect x="460" y="50" width="380" height="210" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="big" x="484" y="84">Live</text>
+    <rect x="710" y="68" width="62.8" height="21" rx="10.5" fill="#e8f6ec"/>
+    <text class="m" x="719" y="82.5" font-size="11" fill="#15803d" font-weight="600">rk_live</text>
+    <line x1="460" y1="104" x2="840" y2="104" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="484" y="130">NETWORKS</text>
+    <text class="note" x="484" y="150">Base, Ethereum, Polygon</text>
+    <circle cx="488" cy="174" r="3" fill="#15803d"/>
+    <text class="note" x="504" y="178">Real money, real wallets</text>
+    <circle cx="488" cy="198" r="3" fill="#15803d"/>
+    <text class="note" x="504" y="202">Settles to your address</text>
+    <circle cx="488" cy="222" r="3" fill="#15803d"/>
+    <text class="note" x="504" y="226">Transactions are final</text>
+    <text class="note" x="440" y="288" text-anchor="middle">One base URL serves both. The key you present decides which one you are talking to.</text>
+  </g>
+</svg>

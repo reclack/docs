@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 290" width="880" height="290" role="img" aria-label="How a webhook signature is built and checked">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="290" fill="#ffffff"/>
+  <g class="t">
+    <text class="who" x="40" y="68">THE HEADER</text>
+    <rect x="40" y="82" width="800" height="44" rx="10" fill="#f8f7fc"/>
+    <text class="m" x="62" y="110" font-size="12.5" fill="#16151f">Reclack-Signature: t=1792447661,v1=9f1c4a2b8e7d0356…</text>
+    <path d="M240,128 v8 h120 v-8" stroke="#e2def2" stroke-width="1.5" fill="none"/>
+    <text class="note" x="300" y="152" text-anchor="middle">When it was signed</text>
+    <path d="M372,128 v8 h300 v-8" stroke="#e2def2" stroke-width="1.5" fill="none"/>
+    <text class="note" x="522" y="152" text-anchor="middle">HMAC-SHA256, hex</text>
+    <text class="who" x="40" y="196">WHAT GETS SIGNED</text>
+    <rect x="40" y="210" width="390" height="40" rx="10" fill="#f8f7fc"/>
+    <text class="m" x="62" y="236" font-size="12" fill="#533afd">"&lt;t&gt;" + "." + "&lt;raw request body&gt;"</text>
+    <path class="edge" d="M446,230 L500,230"/>
+    <rect x="520" y="198" width="320" height="64" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="ttl" x="544" y="226">Compare in constant time</text>
+    <text class="note" x="544" y="246">Reject a timestamp older than five minutes.</text>
+  </g>
+</svg>

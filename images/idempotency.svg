@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" role="img" aria-label="Two identical calls, one stored record">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="280" fill="#ffffff"/>
+  <g class="t">
+    <rect x="40" y="60" width="330" height="68" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="ttl" x="64" y="88">First call</text>
+    <text class="m" x="64" y="108" font-size="11" fill="#6f6b85">idempotency_key: "sub_4Kd9:2026-10-18T22:00"</text>
+    <rect x="300" y="76" width="54.6" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="t" x="309" y="90.5" font-size="11" fill="#533afd" font-weight="600">Stored</text>
+    <rect x="40" y="146" width="330" height="68" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="ttl" x="64" y="174">Retry after a timeout</text>
+    <text class="m" x="64" y="194" font-size="11" fill="#6f6b85">idempotency_key: "sub_4Kd9:2026-10-18T22:00"</text>
+    <rect x="300" y="162" width="60.7" height="21" rx="10.5" fill="#f6f5fa"/>
+    <text class="t" x="309" y="176.5" font-size="11" fill="#8a86a3" font-weight="600">Ignored</text>
+    <path class="edge" d="M378,94 L470,140"/>
+    <path class="edge" d="M378,180 L470,148"/>
+    <rect x="490" y="96" width="350" height="92" rx="12" fill="#faf9fd" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="big" x="516" y="126">One usage record</text>
+    <text class="m" x="516" y="148" font-size="11.5" fill="#6f6b85">quantity 48,210</text>
+    <rect x="730" y="112" width="85.1" height="21" rx="10.5" fill="#e8f6ec"/>
+    <text class="t" x="739" y="126.5" font-size="11" fill="#15803d" font-weight="600">Billed once</text>
+    <text class="note" x="440" y="252" text-anchor="middle">The key is yours to choose. Derive it from the thing you are reporting, not at random.</text>
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img" aria-label="A payment link and the page it opens">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="330" fill="#ffffff"/>
+  <g class="t">
+    <rect x="40" y="60" width="360" height="170" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="big" x="64" y="94">Premium Research Access</text>
+    <rect x="64" y="112" width="312" height="32" rx="8" fill="#f8f7fc"/>
+    <text class="m" x="78" y="133" font-size="11.5" fill="#533afd">pay.reclack.com/plink_8Qd3ZkR2</text>
+    <rect x="64" y="160" width="97.3" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="t" x="73" y="174.5" font-size="11" fill="#533afd" font-weight="600">Collect email</text>
+    <rect x="190" y="160" width="115.6" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="t" x="199" y="174.5" font-size="11" fill="#533afd" font-weight="600">Max 200 payments</text>
+    <text class="note" x="64" y="206">Share it in a post, a DM, an email footer or a button.</text>
+    <path class="edge" d="M410,145 L478,145"/>
+    <rect x="500" y="40" width="340" height="250" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <path d="M500,74 h340" stroke="#e2def2" stroke-width="1.5"/>
+    <circle cx="516" cy="57" r="4" fill="#f0eefa"/>
+    <circle cx="529" cy="57" r="4" fill="#f0eefa"/>
+    <circle cx="542" cy="57" r="4" fill="#f0eefa"/>
+    <text class="t" x="562" y="61" font-size="11.5" fill="#8a86a3">Premium Research Access</text>
+    <text class="t" x="528" y="112" font-size="22" font-weight="600" fill="#16151f">25.00 USDC</text>
+    <text class="note" x="528" y="134">One-time payment</text>
+    <line x1="520" y1="152" x2="820" y2="152" stroke="#e2def2" stroke-width="1.5"/>
+    <rect x="528" y="168" width="284" height="26" rx="8" fill="#f8f7fc"/>
+    <text class="m" x="542" y="185" font-size="11.5" fill="#6f6b85">dana@acme.dev</text>
+    <rect x="528" y="204" width="284" height="26" rx="8" fill="#f8f7fc"/>
+    <text class="m" x="542" y="221" font-size="11.5" fill="#6f6b85">Base · USDC</text>
+    <rect x="528" y="242" width="284" height="20" rx="10" fill="#533afd"/>
+    <text class="t" x="670" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="#ffffff">Pay 25.00 USDC</text>
+    <text class="note" x="440" y="312" text-anchor="middle">Nothing to deploy. The link is the page.</text>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" role="img" aria-label="Your user record and the Reclack customer, joined by your own id">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="270" fill="#ffffff"/>
+  <g class="t">
+    <rect x="40" y="60" width="350" height="150" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="64" y="92">YOUR DATABASE</text>
+    <text class="m" x="64" y="122" font-size="11.5" fill="#6f6b85">id</text>
+    <text class="m" x="190" y="122" font-size="11.5" fill="#16151f">4821</text>
+    <text class="m" x="64" y="148" font-size="11.5" fill="#6f6b85">email</text>
+    <text class="m" x="190" y="148" font-size="11.5" fill="#16151f">dana@acme.dev</text>
+    <text class="m" x="64" y="174" font-size="11.5" fill="#6f6b85">plan</text>
+    <text class="m" x="190" y="174" font-size="11.5" fill="#16151f">pro</text>
+    <rect x="490" y="60" width="350" height="150" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="514" y="92">RECLACK CUSTOMER</text>
+    <text class="m" x="514" y="122" font-size="11.5" fill="#6f6b85">id</text>
+    <text class="m" x="640" y="122" font-size="11.5" fill="#16151f">cus_7Fh2PqX9</text>
+    <text class="m" x="514" y="148" font-size="11.5" fill="#6f6b85">email</text>
+    <text class="m" x="640" y="148" font-size="11.5" fill="#16151f">dana@acme.dev</text>
+    <text class="m" x="514" y="174" font-size="11.5" fill="#6f6b85">external_id</text>
+    <text class="m" x="640" y="174" font-size="11.5" fill="#533afd">user_4821</text>
+    <path class="edge" d="M398,135 L482,135"/>
+    <text class="m" x="440" y="118" text-anchor="middle" font-size="11" fill="#8a86a3">external_id</text>
+    <text class="note" x="440" y="244" text-anchor="middle">Send your own id and you can find the customer later without storing ours.</text>
+  </g>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" role="img" aria-label="Money moves from the customer's wallet to your settlement address">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8f86b5"/>
+    </marker>
+    <style>
+      .t { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .ttl { font-size: 13.5px; font-weight: 600; fill: #16151f; }
+      .big { font-size: 15px; font-weight: 600; fill: #16151f; }
+      .who { font-size: 11px; fill: #8a86a3; letter-spacing: 0.08em; }
+      .note { font-size: 11.5px; fill: #6f6b85; }
+      .mono { font-size: 11.5px; fill: #16151f; }
+      .monom { font-size: 11.5px; fill: #6f6b85; }
+      .rail { stroke: #e2def2; stroke-width: 2; }
+      .dot { fill: #533afd; }
+      .edge { stroke: #c9c5de; stroke-width: 1.5; fill: none; marker-end: url(#a2); }
+    </style>
+  </defs>
+  <rect width="880" height="260" fill="#ffffff"/>
+  <g class="t">
+    <rect x="40" y="54" width="220" height="150" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="60" y="82">CUSTOMER</text>
+    <text class="big" x="60" y="106">Their wallet</text>
+    <text class="note" x="60" y="132">Signs one bounded</text>
+    <text class="note" x="60" y="150">approval, once.</text>
+    <rect x="330" y="54" width="220" height="150" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="350" y="82">RECLACK</text>
+    <text class="big" x="350" y="106">The schedule</text>
+    <text class="note" x="350" y="132">Opens each period and</text>
+    <text class="note" x="350" y="150">submits the collection.</text>
+    <rect x="620" y="54" width="220" height="150" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
+    <text class="who" x="640" y="82">YOU</text>
+    <text class="big" x="640" y="106">Your address</text>
+    <text class="note" x="640" y="132">Funds land where you</text>
+    <text class="note" x="640" y="150">told us to settle.</text>
+    <rect x="60" y="162" width="97.3" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="t" x="69" y="176.5" font-size="11" fill="#533afd" font-weight="600">Non-custodial</text>
+    <rect x="350" y="162" width="97.3" height="21" rx="10.5" fill="#ece9ff"/>
+    <text class="t" x="359" y="176.5" font-size="11" fill="#533afd" font-weight="600">No funds held</text>
+    <rect x="640" y="162" width="109.5" height="21" rx="10.5" fill="#e8f6ec"/>
+    <text class="t" x="649" y="176.5" font-size="11" fill="#15803d" font-weight="600">Settled onchain</text>
+    <path class="edge" d="M268,129 L322,129"/>
+    <path class="edge" d="M558,129 L612,129"/>
+    <text class="note" x="440" y="232" text-anchor="middle">Reclack never takes custody. It moves money between addresses and tells you what happened.</text>
+  </g>
+</svg>
