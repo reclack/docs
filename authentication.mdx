@@ -1,6 +1,6 @@
 ---
 title: "Authentication"
-description: "API keys, the headers we accept, and how to keep a key safe."
+description: "API keys, the header to send them in, and how to keep a key safe."
 ---
 
 Every call to the Reclack API is authenticated with an API key. The key also
@@ -8,7 +8,7 @@ decides which environment you are talking to, so there is no separate sandbox
 host to remember.
 
 <Frame caption="What a key is made of, and the headers it can travel in">
-  <img src="/images/api-key.svg" alt="An API key split into its Reclack prefix, its environment segment and its 32 random characters, above the three accepted headers." />
+  <img src="/images/api-key.svg" alt="An API key split into its Reclack prefix, its environment segment and its 32 random characters, above the Api-Key header it is sent in." />
 </Frame>
 
 ## Key format
@@ -24,27 +24,27 @@ lose a key, revoke it and mint another.
 
 ## Sending the key
 
-Use the `Authorization` header with a bearer token. This is what the examples
-in these docs use.
+Send the key in the `Api-Key` header. This is what every example in these docs
+uses.
 
 <CodeGroup>
 
 ```bash curl
 curl "https://api.reclack.com/v1/customers" \
-  -H "Authorization: Bearer rk_sandbox_your_key_here"
+  -H "Api-Key: rk_sandbox_your_key_here"
 ```
 
 ```js Node
 const response = await fetch("https://api.reclack.com/v1/customers", {
   headers: {
-    Authorization: `Bearer ${process.env.RECLACK_KEY}`,
+    "Api-Key": process.env.RECLACK_KEY,
   },
 });
 ```
 
 ```go Go
 req, _ := http.NewRequest("GET", "https://api.reclack.com/v1/customers", nil)
-req.Header.Set("Authorization", "Bearer "+os.Getenv("RECLACK_KEY"))
+req.Header.Set("Api-Key", os.Getenv("RECLACK_KEY"))
 ```
 
 ```python Python
@@ -52,17 +52,17 @@ import os, requests
 
 requests.get(
     "https://api.reclack.com/v1/customers",
-    headers={"Authorization": f"Bearer {os.environ['RECLACK_KEY']}"},
+    headers={"Api-Key": os.environ["RECLACK_KEY"]},
 )
 ```
 
 </CodeGroup>
 
-Two other headers work if your stack already uses them:
+Two other headers work if your stack already puts credentials somewhere else:
 
 ```http
 X-API-Key: rk_live_your_key_here
-Api-Key: rk_live_your_key_here
+Authorization: Bearer rk_live_your_key_here
 ```
 
 We recognise a key by its own shape, so a session token sitting in the same
@@ -114,7 +114,7 @@ API:
 
 ```bash
 curl -X DELETE "https://api.reclack.com/v1/credentials/cred_7Fh2PqX9" \
-  -H "Authorization: Bearer $RECLACK_KEY"
+  -H "Api-Key: $RECLACK_KEY"
 ```
 
 Revocation takes effect on the next request. Calls already in flight finish.

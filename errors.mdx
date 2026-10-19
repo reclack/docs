@@ -57,7 +57,7 @@ Successful responses are just as plain. Objects and lists come back under
 <AccordionGroup>
   <Accordion title="401 authentication_error">
     The key was missing, malformed, or revoked. Check that you are sending
-    `Authorization: Bearer rk_live_...` and that the key has not been deleted
+    `Api-Key: rk_live_...` and that the key has not been deleted
     in the dashboard.
 
     We answer the same way for a key that never existed and one that was
@@ -101,7 +101,7 @@ async function createCheckout(body) {
   const response = await fetch("https://api.reclack.com/v1/checkouts", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.RECLACK_KEY}`,
+      "Api-Key": process.env.RECLACK_KEY,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),

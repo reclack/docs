@@ -20,7 +20,7 @@ price.
 
 ```bash curl
 curl -X POST "https://api.reclack.com/v1/products" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Pro Plan",
@@ -99,7 +99,7 @@ monthly one:
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/products/prod_2Pb8xk9/prices" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "amount": "290.00",
@@ -139,7 +139,7 @@ explain.
 
 ```bash
 curl -X PATCH "https://api.reclack.com/v1/products/prod_2Pb8xk9/prices/price_7Fh2PqX9" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "active": false }'
 ```

@@ -3,7 +3,7 @@
   "info": {
     "title": "Reclack API",
     "version": "1.0.0",
-    "description": "Recurring and one-time stablecoin payments, taken straight from your customers' wallets.\n\nReclack is non-custodial. Payments move from a customer's wallet to a settlement address you control, and Reclack never holds funds and never asks anyone for a seed phrase or a private key.\n\n## Authentication\n\nSend your API key as a bearer token:\n\n```\nAuthorization: Bearer rk_live_your_key_here\n```\n\n`X-API-Key` and `Api-Key` are accepted too. The key prefix decides the environment: `rk_sandbox_` for test chains, `rk_live_` for production.\n\n## Responses\n\nObjects and lists come back under `data`. Errors come back under `error` with a `type`, an optional `code` and a message written for a person."
+    "description": "Recurring and one-time stablecoin payments, taken straight from your customers' wallets.\n\nReclack is non-custodial. Payments move from a customer's wallet to a settlement address you control, and Reclack never holds funds and never asks anyone for a seed phrase or a private key.\n\n## Authentication\n\nSend your API key in the `Api-Key` header:\n\n```\nApi-Key: rk_live_your_key_here\n```\n\n`X-API-Key` and `Authorization: Bearer` are accepted too. The key prefix decides the environment: `rk_sandbox_` for test chains, `rk_live_` for production.\n\n## Responses\n\nObjects and lists come back under `data`. Errors come back under `error` with a `type`, an optional `code` and a message written for a person."
   },
   "servers": [
     {
@@ -13,7 +13,7 @@
   ],
   "security": [
     {
-      "bearerAuth": []
+      "apiKeyAuth": []
     }
   ],
   "tags": [
@@ -4638,15 +4638,11 @@
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "Your Reclack API key."
-      },
       "apiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-API-Key"
+        "name": "Api-Key",
+        "description": "Your Reclack API key. The prefix decides the environment: rk_sandbox_ for test chains, rk_live_ for production."
       }
     },
     "schemas": {

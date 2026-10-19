@@ -14,7 +14,7 @@ adding up, the invoice and the collection are ours.
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/subscriptions/sub_4Kd9/usage" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "quantity": 48210,

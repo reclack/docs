@@ -15,7 +15,7 @@ and every payment through it arrives attached to a customer.
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/payment-links" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Premium Research Access",
@@ -112,7 +112,7 @@ still have live.
 
 ```bash
 curl -X PATCH "https://api.reclack.com/v1/payment-links/plink_8Qd3ZkR2" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "status": "inactive" }'
 ```

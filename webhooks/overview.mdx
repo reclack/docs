@@ -18,7 +18,7 @@ the API:
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/webhooks" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://acme.dev/hooks/reclack",
@@ -115,7 +115,7 @@ its timing. Replay one from there, or through the API:
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/webhook-deliveries/whd_8Qd3/retry" \
-  -H "Authorization: Bearer $RECLACK_KEY"
+  -H "Api-Key: $RECLACK_KEY"
 ```
 
 A bad deploy should not cost you a day of events.
@@ -126,5 +126,5 @@ The events are stored either way. List them while you are still building:
 
 ```bash
 curl "https://api.reclack.com/v1/events?limit=20" \
-  -H "Authorization: Bearer $RECLACK_KEY"
+  -H "Api-Key: $RECLACK_KEY"
 ```

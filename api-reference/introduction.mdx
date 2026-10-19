@@ -23,15 +23,15 @@ chains or production, so you never change hostnames between environments.
 
 ## Authentication
 
-Send your API key as a bearer token.
+Send your API key in the `Api-Key` header.
 
 ```bash
 curl https://api.reclack.com/v1/products \
-  -H "Authorization: Bearer rk_live_your_key_here"
+  -H "Api-Key: rk_live_your_key_here"
 ```
 
-`X-API-Key` and `Api-Key` work too, if one of them fits your stack better. The
-prefix tells you which environment you are in: `rk_sandbox_` for test chains,
+`X-API-Key` and `Authorization: Bearer` work too, if one of them fits your
+stack better. The prefix tells you which environment you are in: `rk_sandbox_` for test chains,
 `rk_live_` for production. See [Authentication](/authentication) for how keys
 are issued and rotated.
 

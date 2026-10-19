@@ -17,7 +17,7 @@ You need one address per network you accept.
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/merchants/mer_2Pb8/settlement-accounts" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "network": "base",
@@ -38,7 +38,7 @@ sold changes, and nothing already settled moves.
 
 ```bash
 curl -X PATCH "https://api.reclack.com/v1/merchants/mer_2Pb8/settlement-accounts/acct_4Kd9" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{ "address": "0x29C4f1B8e7A0d3C6b5E2a9F4c8D1e0A71053" }'
 ```
@@ -73,7 +73,7 @@ rather than with an optimistic guess.
 
 ```bash
 curl "https://api.reclack.com/v1/transactions?limit=50" \
-  -H "Authorization: Bearer $RECLACK_KEY"
+  -H "Api-Key: $RECLACK_KEY"
 ```
 
 ## Refunds

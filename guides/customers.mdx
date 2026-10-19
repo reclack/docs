@@ -14,7 +14,7 @@ invoices, payments and the portal all hang off it.
 
 ```bash
 curl -X POST "https://api.reclack.com/v1/customers" \
-  -H "Authorization: Bearer $RECLACK_KEY" \
+  -H "Api-Key: $RECLACK_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "dana@acme.dev",
@@ -46,7 +46,7 @@ the wallet is the identity.
 
 ```bash
 curl "https://api.reclack.com/v1/customers/cus_7Fh2PqX9" \
-  -H "Authorization: Bearer $RECLACK_KEY"
+  -H "Api-Key: $RECLACK_KEY"
 ```
 
 ```json Response

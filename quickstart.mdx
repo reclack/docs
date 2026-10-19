@@ -33,7 +33,7 @@ under **Developers**, then **API keys**. Sandbox keys start with
 
     ```bash
     curl -X POST "$RECLACK_API/v1/products" \
-      -H "Authorization: Bearer $RECLACK_KEY" \
+      -H "Api-Key: $RECLACK_KEY" \
       -H "Content-Type: application/json" \
       -d '{
         "name": "Pro Plan",
@@ -56,7 +56,7 @@ under **Developers**, then **API keys**. Sandbox keys start with
 
     ```bash
     curl -X POST "$RECLACK_API/v1/customers" \
-      -H "Authorization: Bearer $RECLACK_KEY" \
+      -H "Api-Key: $RECLACK_KEY" \
       -H "Content-Type: application/json" \
       -d '{
         "email": "dana@acme.dev",
@@ -75,7 +75,7 @@ under **Developers**, then **API keys**. Sandbox keys start with
 
     ```bash
     curl -X POST "$RECLACK_API/v1/checkouts" \
-      -H "Authorization: Bearer $RECLACK_KEY" \
+      -H "Api-Key: $RECLACK_KEY" \
       -H "Content-Type: application/json" \
       -d '{
         "price_id": "price_2Pb8xk9",
@@ -105,7 +105,7 @@ under **Developers**, then **API keys**. Sandbox keys start with
 
     ```bash
     curl "$RECLACK_API/v1/events" \
-      -H "Authorization: Bearer $RECLACK_KEY"
+      -H "Api-Key: $RECLACK_KEY"
     ```
 
     That endpoint lists everything Reclack has emitted for your workspace, which
