@@ -30,9 +30,10 @@
     <text class="m" x="58" y="204" font-size="11.5" fill="#6f6b85">0xC104…88aa</text>
     <path class="edge" d="M238,199 L300,176"/>
     <rect x="310" y="96" width="220" height="110" rx="12" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
-    <text class="big" x="334" y="128">Reclack</text>
-    <text class="note" x="334" y="150">Routes and records.</text>
-    <text class="note" x="334" y="170">Holds nothing.</text>
+    <g transform="translate(334,114) scale(0.2600)"><rect width="100" height="100" rx="14" fill="#533afd"/><g transform="translate(18.50,24.61) scale(0.7) translate(-5,-13.72)"><path d="m 5,13.72 0,72.551 85.408,0 c 2.544,0 4.592,-2.048 4.592,-4.592 l 0,-23.418 -16.531,0 c -4.579,0 -8.265,-3.686 -8.265,-8.265 0,-4.579 3.686,-8.265 8.265,-8.265 l 16.531,0 0,-23.418 c 0,-2.544 -2.048,-4.592 -4.592,-4.592 z m 75.469,29.847 c -3.55,0 -6.429,2.878 -6.429,6.429 0,3.55 2.878,6.429 6.429,6.429 3.55,0 6.429,-2.878 6.429,-6.429 0,-3.551 -2.878,-6.429 -6.429,-6.429 z" fill="#ffffff"/></g></g>
+    <text class="big" x="371" y="133">Reclack</text>
+    <text class="note" x="334" y="164">Routes and records.</text>
+    <text class="note" x="334" y="184">Holds nothing.</text>
     <text class="who" x="610" y="68">YOUR ADDRESSES</text>
     <rect x="610" y="90" width="230" height="34" rx="10" fill="#ffffff" stroke="#e2def2" stroke-width="1.5"/>
     <text class="t" x="628" y="112" font-size="11.5" fill="#16151f" font-weight="600">Base</text>
