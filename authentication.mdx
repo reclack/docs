@@ -68,6 +68,56 @@ X-API-Key: rk_live_your_key_here
 We recognise a key by its own shape, so a session token sitting in the same
 header is never mistaken for one.
 
+## Publishable keys
+
+A secret key belongs on your server. A page in a browser gets a publishable key
+instead, which is public on purpose: it names your workspace and may open a
+checkout, and it can do nothing else.
+
+| Prefix | Environment | What it touches |
+| --- | --- | --- |
+| `pk_sandbox_` | Sandbox | Opening test checkouts. |
+| `pk_live_` | Live | Opening real checkouts. |
+
+You already have one. A publishable key is created alongside your first secret
+key in each environment, and you can see it in full whenever you like under
+**Developers**, then **API keys**. Unlike a secret, it is not hidden after
+creation: a value that lives in your own HTML has nothing to hide.
+
+What it can do is fixed at `checkout:write`, whatever permissions you ask for.
+It cannot read customers, list payments, mint keys or change settings.
+
+```js
+import { Reclack } from '@reclack/widget'
+
+const reclack = Reclack({ publicKey: 'pk_live_8xK2...' })
+
+const session = await reclack.checkout.initialize({
+  price_id: 'price_7Fh2PqX9',
+  customer: { email: 'dana@acme.dev' },
+})
+```
+
+It travels in the same headers as a secret key, so a plain request works too:
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Api-Key: pk_live_8xK2..." \
+  -H "Content-Type: application/json" \
+  -d '{ "price_id": "price_7Fh2PqX9" }'
+```
+
+<Note>
+A publishable key is still rate limited and still belongs to one environment. A
+`pk_sandbox_` key cannot open a live checkout, and the prefix makes the mistake
+obvious before anybody chases it.
+</Note>
+
+Need another, or one with a name of its own? Pass `"publishable": true` to
+[create a key](/api-reference/credentials/create). The dashboard lists the keys
+you have and copies a publishable one in full. Revoking stops it on the next
+request, so roll it the same way you would roll a secret.
+
 ## What a key can do
 
 Keys carry permissions. A key that only records usage does not need the ability

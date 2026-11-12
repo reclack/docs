@@ -4088,11 +4088,16 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "The permissions this key carries.",
+                    "description": "The permissions this key carries. Ignored for a publishable key, which may only open a checkout.",
                     "example": [
                       "products:write",
                       "invoices:write"
                     ]
+                  },
+                  "publishable": {
+                    "type": "boolean",
+                    "description": "Mint a publishable key (pk_) for your own pages instead of a secret key. It is returned in full on every read.",
+                    "example": false
                   }
                 },
                 "required": [
@@ -5479,8 +5484,13 @@
           },
           "secret": {
             "type": "string",
-            "description": "Returned once, at creation.",
+            "description": "Returned once, at creation. Secret keys only.",
             "example": "rk_live_your_new_key_secret"
+          },
+          "public_key": {
+            "type": "string",
+            "description": "A publishable key in full, on every read. Absent on a secret key.",
+            "example": "pk_live_8xK2mQ4vRt7NpL1cXwZy9Hd3"
           },
           "permissions": {
             "type": "array",
