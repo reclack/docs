@@ -6,6 +6,11 @@ description: "Take a payment inside your own page, inline or in a dialog, with @
 The widget puts the Reclack checkout in your page. Your customer pays without
 leaving, and what they are asked to approve is still rendered by us.
 
+<Frame caption="The checkout inline in a merchant's own page">
+  <img className="block dark:hidden" src="/images/embed-inline.png" alt="A merchant checkout page with the Reclack checkout rendered inside it: the amount and order summary on the left, the network, the wallets the browser exposes and the pay button on the right." />
+  <img className="hidden dark:block" src="/images/embed-inline-dark.png" alt="A merchant checkout page with the Reclack checkout rendered inside it: the amount and order summary on the left, the network, the wallets the browser exposes and the pay button on the right." />
+</Frame>
+
 ```sh
 npm install @reclack/widget
 ```
@@ -116,6 +121,11 @@ to fit, so your page scrolls as one rather than a box scrolling inside a page.
 
 `mode: 'popup'` puts it over the page in a native `<dialog>`, which brings
 focus trapping, Esc to close and an inert background with it.
+
+<Frame caption="The same checkout in popup mode, over the page that opened it">
+  <img className="block dark:hidden" src="/images/embed-popup.png" alt="The Reclack checkout in a dialog over a merchant page, with the page behind it dimmed and inert." />
+  <img className="hidden dark:block" src="/images/embed-popup-dark.png" alt="The Reclack checkout in a dialog over a merchant page, with the page behind it dimmed and inert." />
+</Frame>
 
 ```js
 const checkout = Reclack().launch(reference, { mode: 'popup' })
