@@ -75,6 +75,11 @@ session = reclack.post(
 
 Send your customer to `url`. That is the whole integration on your side.
 
+<Tip>
+You can also keep them on your site. [`@reclack/widget`](/sdks/checkout-widget)
+renders the same page in an iframe, inline or in a dialog.
+</Tip>
+
 ## The parameters that matter
 
 | Field | Notes |
@@ -133,6 +138,14 @@ receipt rather than on a form.
 
 Sessions expire. After that the link stops accepting payments, and you create a
 new session if the customer still wants to pay.
+
+## Embedding it instead
+
+The hosted page is one of two ways to use a session. The other is to put it in
+your own page with [the checkout widget](/sdks/checkout-widget), which keeps
+the payer on your site and still renders what they approve on our origin. Which
+sites may frame it is up to you: see [Embedding the
+checkout](/guides/embedding).
 
 ## Building your own page
 

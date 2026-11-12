@@ -42,6 +42,7 @@
             "group": "Taking payments",
             "pages": [
               "guides/checkout",
+              "guides/embedding",
               "guides/payment-links",
               "guides/invoices"
             ]

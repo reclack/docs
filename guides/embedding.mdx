@@ -1,0 +1,117 @@
+---
+title: "Embedding the checkout"
+description: "Put the checkout in your own site, and the allowlist that decides which sites may."
+---
+
+An embedded checkout is the hosted page in an iframe on your site. The payer
+never leaves, and what they approve is still rendered on our origin, where your
+page cannot read or rewrite it.
+
+Use [`@reclack/widget`](/sdks/checkout-widget) to put it there. This page is
+about the part that is not JavaScript: which sites are allowed to frame you,
+and what a browser does about it.
+
+## Allow your origin
+
+Set the list in the dashboard under **Developers**, then **Embedding**.
+
+| State | What happens |
+| --- | --- |
+| No origins listed | Any site may embed your checkout. This is what every workspace starts as |
+| One or more listed | Those sites may embed it. Every other site gets a page saying so instead of a payment form |
+
+An origin is a scheme and a host, nothing more: `https://acme.dev`. Paths,
+query strings and trailing slashes are dropped, only `http` and `https` are
+accepted, and up to twenty origins can be listed.
+
+<Note>
+`http://localhost:3000` and `https://localhost:3000` are different origins, as
+are `https://acme.dev` and `https://www.acme.dev`. List each one you actually
+embed from, staging included.
+</Note>
+
+## What the browser enforces
+
+Every document we serve answers
+`Content-Security-Policy: frame-ancestors 'none'` unless it was opened by the
+widget. A hand-written `<iframe src="https://pay.reclack.com/chk_...">` loads
+nothing at all, and neither does a framed receipt or billing portal.
+
+```js
+// This works: launch adds what the checkout needs to be embeddable.
+Reclack().launch(reference, { mode: 'inline', container: '#checkout' })
+```
+
+That is the first of two checks, and it is the browser's. The second is the
+checkout's own: before it draws anything payable it compares the site framing
+it against your list, and refuses if it does not match.
+
+<Warning>
+The checkout reads the framing origin from the browser, never from a message
+the embedding page sends. A page that claims to be an allowed origin is still
+measured against what the browser reports it is. A frame that hides where it
+came from is refused once a list exists.
+</Warning>
+
+## What your page is told
+
+The two halves talk over a single `MessagePort`, handed to the frame and
+addressed to one origin. Your page learns four things:
+
+| Callback | What it carries |
+| --- | --- |
+| `onReady` | The checkout has drawn something |
+| `onSuccess` | `{ reference, transaction, redirectUrl }` |
+| `onError` | A message a person can read |
+| `onClose` | They closed it without paying |
+
+Nothing else crosses. Your page is not told the amount, the payer's address or
+which wallet they used, because it is another origin and the less it knows
+about what happened in there the less there is to get wrong. Read the payment
+from [the API](/api-reference/checkouts/payer-get) or the
+[webhook](/webhooks/overview) instead.
+
+The frame also reports the height it needs, which the widget applies, so your
+page scrolls as one rather than a box scrolling inside a page.
+
+## Sizing, palette and return
+
+- **Height** is handled for you. The frame grows and shrinks with its content.
+- **Palette** follows the merchant's setting unless your page asks for one. See
+  [Appearance](/guides/appearance).
+- **Return** is yours to do. Set `redirect_url` on the session and `onSuccess`
+  hands it back as `redirectUrl` for you to navigate to, or ignore it and move
+  the payer along yourself.
+
+## When something does not appear
+
+<AccordionGroup>
+  <Accordion title="The frame is blank">
+    The document refused to be framed. Check that you are launching through
+    the widget rather than writing your own `<iframe>`, and look in the console
+    for a `frame-ancestors` refusal.
+  </Accordion>
+  <Accordion title="It says this site cannot show this checkout">
+    The checkout loaded and found the framing origin is not on the list. Add
+    the exact origin in **Developers**, then **Embedding**, and reload. The
+    message is deliberate: a merchant with a misconfigured list gets an
+    explanation rather than an empty box.
+  </Accordion>
+  <Accordion title="It works in one browser and not another">
+    Check the iframe's referrer policy. Where a browser cannot name the parent
+    origin itself, the checkout falls back to the referrer, and a frame that
+    suppresses it cannot be identified once a list exists.
+  </Accordion>
+  <Accordion title="A wallet extension cannot be seen inside the frame">
+    Wallets inject per document, and the frame gets its own copy in every
+    browser we have tested. One browser withholds the provider from a frame
+    that does not ask for it, which the widget's own frame attributes cover, so
+    use `launch` rather than a frame of your own.
+  </Accordion>
+</AccordionGroup>
+
+## Or do not embed at all
+
+Redirecting to the hosted checkout needs no allowlist, no iframe and no script
+on your payment page. The trade is that the payer leaves your site. See
+[Hosted checkout](/guides/checkout).
