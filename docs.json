@@ -232,6 +232,10 @@
       {
         "label": "Support",
         "href": "mailto:support@reclack.com"
+      },
+      {
+        "label": "Playground",
+        "href": "https://playground.reclack.com"
       }
     ],
     "primary": {

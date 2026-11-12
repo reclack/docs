@@ -32,3 +32,36 @@
 	--gray-900: 20 23 29;
 	--gray-950: 11 13 17;
 }
+
+/*
+ * Playground, as an outline button beside the filled Dashboard one.
+ *
+ * Mintlify gives a navbar one button, so the second is a link wearing the
+ * same shape. Addressed by its href, the one part of this markup that is
+ * ours, rather than by a theme class that may be renamed.
+ */
+nav[aria-label="Main"] a[href*="playground.reclack.com"] {
+	border: 1px solid rgb(var(--primary) / 0.35);
+	border-radius: 0.75rem;
+	/* The button's own height: its padding, less what the border adds. */
+	padding: calc(0.5rem - 1px) 0.75rem;
+	color: rgb(var(--primary));
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+nav[aria-label="Main"] a[href*="playground.reclack.com"]:hover {
+	background-color: rgb(var(--primary) / 0.08);
+	border-color: rgb(var(--primary) / 0.55);
+	color: rgb(var(--primary));
+}
+
+.dark nav[aria-label="Main"] a[href*="playground.reclack.com"] {
+	border-color: rgb(var(--primary-light) / 0.4);
+	color: rgb(var(--primary-light));
+}
+
+.dark nav[aria-label="Main"] a[href*="playground.reclack.com"]:hover {
+	background-color: rgb(var(--primary-light) / 0.12);
+	border-color: rgb(var(--primary-light) / 0.65);
+	color: rgb(var(--primary-light));
+}
