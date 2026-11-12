@@ -43,6 +43,7 @@
             "pages": [
               "guides/checkout",
               "guides/embedding",
+              "guides/appearance",
               "guides/payment-links",
               "guides/invoices"
             ]
