@@ -11,6 +11,11 @@ Use [`@reclack/widget`](/sdks/checkout-widget) to put it there. This page is
 about the part that is not JavaScript: which sites are allowed to frame you,
 and what a browser does about it.
 
+<Frame caption="An embedded checkout: your page around it, ours inside it">
+  <img className="block dark:hidden" src="/images/embed-inline.png" alt="A merchant checkout page with the Reclack checkout embedded in it, sized to fit the page rather than scrolling inside a box." />
+  <img className="hidden dark:block" src="/images/embed-inline-dark.png" alt="A merchant checkout page with the Reclack checkout embedded in it, sized to fit the page rather than scrolling inside a box." />
+</Frame>
+
 ## Allow your origin
 
 Set the list in the dashboard under **Developers**, then **Embedding**.
@@ -96,6 +101,11 @@ page scrolls as one rather than a box scrolling inside a page.
     the exact origin in **Developers**, then **Embedding**, and reload. The
     message is deliberate: a merchant with a misconfigured list gets an
     explanation rather than an empty box.
+
+    <Frame caption="A frame from an origin that is not on the list">
+      <img className="block dark:hidden" src="/images/embed-refused.png" alt="The embedded checkout showing a refusal: this site cannot show this checkout, with a line saying the merchant has not allowed it to be embedded here." />
+      <img className="hidden dark:block" src="/images/embed-refused-dark.png" alt="The embedded checkout showing a refusal: this site cannot show this checkout, with a line saying the merchant has not allowed it to be embedded here." />
+    </Frame>
   </Accordion>
   <Accordion title="It works in one browser and not another">
     Check the iframe's referrer policy. Where a browser cannot name the parent
