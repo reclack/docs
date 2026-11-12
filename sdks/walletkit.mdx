@@ -12,6 +12,8 @@ balance, or a connection of your own.
 npm install @reclack/walletkit
 ```
 
+[`@reclack/walletkit` on npm](https://www.npmjs.com/package/@reclack/walletkit)
+
 - **Any framework.** The picker is a custom element, and the connection layer
   is a plain object with `getState` and `subscribe`.
 - **One dependency**, loaded only when somebody picks a wallet that needs it.
@@ -59,6 +61,8 @@ const { address } = await connectWallet({ intent: ['address'], family: 'evm' })
 npm install @reclack/walletkit @reclack/walletkit-react
 ```
 
+[`@reclack/walletkit-react` on npm](https://www.npmjs.com/package/@reclack/walletkit-react)
+
 ```tsx
 import { ReclackConnect } from '@reclack/walletkit-react'
 
@@ -82,6 +86,8 @@ Preact needs no second package: the React one works through `preact/compat`.
 ```sh
 npm install @reclack/walletkit @reclack/walletkit-vue
 ```
+
+[`@reclack/walletkit-vue` on npm](https://www.npmjs.com/package/@reclack/walletkit-vue)
 
 ```vue
 <script setup>
