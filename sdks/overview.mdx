@@ -1,0 +1,70 @@
+---
+title: "SDKs and libraries"
+description: "What Reclack publishes for the browser, and which piece to reach for."
+---
+
+Reclack's API is plain HTTP and JSON, so nothing here is required. These
+packages exist because two jobs are genuinely awkward to do yourself: putting a
+payment inside your own page, and connecting a wallet in a browser.
+
+## What we publish
+
+| Package | What it does | Install |
+| --- | --- | --- |
+| [`@reclack/widget`](/sdks/checkout-widget) | The Reclack checkout inside your page, inline or in a dialog. Also redirects to the hosted page | `npm i @reclack/widget` |
+| [`@reclack/walletkit`](/sdks/walletkit) | A wallet picker and connection layer. No framework, one dependency | `npm i @reclack/walletkit` |
+| [`@reclack/walletkit-react`](/sdks/walletkit#your-framework) | The picker as a React component. Serves Preact too | `npm i @reclack/walletkit-react` |
+| [`@reclack/walletkit-vue`](/sdks/walletkit#your-framework) | The picker as a Vue component | `npm i @reclack/walletkit-vue` |
+
+The widget is also served as one file for pages with no bundler:
+
+```html
+<script src="https://js.reclack.com/widget.js"></script>
+```
+
+That gives you `window.Reclack`, the same function the package exports.
+
+## Which one you need
+
+<CardGroup cols={2}>
+  <Card title="Taking a payment" icon="credit-card" href="/sdks/checkout-widget">
+    Use `@reclack/widget`. It renders our checkout in your page, so you are not
+    rebuilding a payment form or handling a signature yourself.
+  </Card>
+  <Card title="Sending them to us" icon="arrow-up-right-from-square" href="/guides/checkout">
+    Use no library at all. Create a session and redirect to its `url`. The
+    widget's `redirect()` is a convenience, not a requirement.
+  </Card>
+  <Card title="Connecting a wallet" icon="wallet" href="/sdks/walletkit">
+    Use `@reclack/walletkit`. For an address, a balance, or a wallet connection
+    that has nothing to do with a Reclack payment.
+  </Card>
+  <Card title="Calling the API" icon="server" href="/api-reference/introduction">
+    Use your language's HTTP client. There is no server SDK yet, and the API is
+    small enough that one buys you little.
+  </Card>
+</CardGroup>
+
+## On your server
+
+Keep your secret key there and call the API directly. Every example in these
+docs is a plain request, so there is nothing to port.
+
+<Warning>
+No browser package ever takes a secret key. The widget throws on one before a
+request leaves the page. Use a [publishable
+key](/authentication#publishable-keys) in anything a visitor can read.
+</Warning>
+
+## Versions and support
+
+All four packages are published to npm under the `@reclack` scope, built as
+ESM, and ship their own TypeScript types. They are pre-1.0, so pin a version if
+you need the surface to hold still.
+
+`widget.js` on the CDN serves the current release and is cached for five
+minutes, so a fix reaches your pages without you editing any HTML.
+
+Browsers: Chrome, Edge, Firefox and Safari 15.4 or newer. No polyfills are
+bundled, and nothing here needs a build step beyond what your framework
+already does.

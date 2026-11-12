@@ -47,6 +47,14 @@
             ]
           },
           {
+            "group": "SDKs and libraries",
+            "pages": [
+              "sdks/overview",
+              "sdks/checkout-widget",
+              "sdks/walletkit"
+            ]
+          },
+          {
             "group": "Recurring billing",
             "pages": [
               "guides/subscriptions",
@@ -199,6 +207,11 @@
           "anchor": "Dashboard",
           "href": "https://app.reclack.com",
           "icon": "gauge"
+        },
+        {
+          "anchor": "Playground",
+          "href": "https://playground.reclack.com",
+          "icon": "flask"
         },
         {
           "anchor": "Status",
