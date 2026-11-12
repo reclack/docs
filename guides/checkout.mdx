@@ -89,6 +89,7 @@ renders the same page in an iframe, inline or in a dialog.
 | `networks` | Narrow the price's networks to the ones you want for this session. |
 | `customer` | Email, name, or an existing customer id. A new customer is created if none matches. |
 | `fee_payer` | `merchant` by default. Set to `customer` to pass the platform fee on, and the page shows it as its own line. |
+| `redirect_url` | Where the payer goes once they have paid. Absent means the hosted confirmation. Only an absolute `http` or `https` URL is accepted. |
 | `expires_in` | Seconds until the session expires. Omit for the default. |
 | `metadata` | Anything of yours. Returned on the session and on the events it produces. |
 

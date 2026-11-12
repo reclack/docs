@@ -2217,6 +2217,11 @@
                     ],
                     "description": "merchant by default."
                   },
+                  "redirect_url": {
+                    "type": "string",
+                    "description": "Where the payer goes once they have paid. The hosted confirmation by default. Must be an absolute http or https URL.",
+                    "example": "https://acme.dev/thanks"
+                  },
                   "expires_in": {
                     "type": "integer",
                     "description": "Seconds until the session expires.",
