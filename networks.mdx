@@ -1,0 +1,83 @@
+---
+title: "Networks"
+description: "The chains Reclack settles on, what they are called in the API, and what differs between them."
+---
+
+Reclack settles one asset, USDC, across several chains. The objects are the
+same wherever a payment lands: a price, a checkout, a subscription and an
+invoice do not change shape per network. What changes is where the money
+arrives and what the payer waits for.
+
+## Live networks
+
+| Network | API name | Chain id | Recurring |
+| --- | --- | --- | --- |
+| Arc | `arc` | 5042 | Yes |
+| Base | `base` | 8453 | Yes |
+| Ethereum | `ethereum` | 1 | Yes |
+| Polygon | `polygon` | 137 | Yes |
+| Solana | `solana` | — | One-time only |
+
+## Sandbox networks
+
+Each live chain has a test counterpart. The names differ, so a sandbox key and
+a live key never address the same chain by accident.
+
+| Network | API name | Chain id |
+| --- | --- | --- |
+| Arc Testnet | `arc-testnet` | 5042002 |
+| Base Sepolia | `base-sepolia` | 84532 |
+| Ethereum Sepolia | `ethereum-sepolia` | 11155111 |
+| Polygon Amoy | `polygon-amoy` | 80002 |
+| Solana Devnet | `solana-devnet` | — |
+
+## Arc
+
+Arc is Circle's own chain, and the one difference worth knowing is that USDC
+is its native token. Gas is paid in the same dollars the payment settles in,
+so there is no second asset to hold and no native token to top up before a
+customer can pay.
+
+<Note>
+Reclack pays the network fee on Arc as it does everywhere else. Your customer
+needs USDC and nothing besides.
+</Note>
+
+Blocks finalize deterministically, so a payment is settled rather than
+probably settled: Reclack waits two blocks on Arc, against twelve on Ethereum
+and sixty-four on Polygon. Transactions are visible at
+[explorer.arc.io](https://explorer.arc.io).
+
+## Choosing which networks you accept
+
+A price carries the networks it may be bought on, and a checkout may narrow
+that list further.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Api-Key: $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "networks": ["arc", "base"]
+  }'
+```
+
+The payer picks from that list on the checkout page. The picker is
+alphabetical, and opens on Base where Base is one of the options.
+
+Leave `networks` out and the checkout offers everything the price allows.
+Offer fewer where you have a reason to: a chain you have no settlement address
+for cannot be paid on.
+
+## Before you accept a network
+
+Each network needs an address you control, registered once. See
+[Settlement](/guides/settlement) for how to add one, and
+[Environments](/environments) for what differs between sandbox and live.
+
+<Warning>
+An address is per network. The same bytes may be valid on several EVM chains,
+but Reclack sends to the address registered for the chain the payment arrived
+on, so register each one deliberately.
+</Warning>

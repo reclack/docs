@@ -26,6 +26,7 @@
               "quickstart",
               "authentication",
               "environments",
+              "networks",
               "errors",
               "idempotency"
             ]
