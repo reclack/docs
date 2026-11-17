@@ -2230,7 +2230,7 @@
                   "metadata": {
                     "type": "object",
                     "additionalProperties": true,
-                    "description": "Returned on the session and on its events."
+                    "description": "Your own keys. Returned on the session, on its events, and on the subscription a recurring checkout creates."
                   }
                 }
               }

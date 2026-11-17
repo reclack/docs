@@ -31,6 +31,25 @@ curl -X POST "https://api.reclack.com/v1/checkouts" \
 When the payment confirms you receive `subscription.created`, carrying the
 subscription id, the customer, the amount and the next charge date.
 
+## Carrying your own reference
+
+Metadata on the checkout becomes the subscription's metadata, and every event
+about that subscription repeats it.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Api-Key: $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "metadata": { "account_id": "acct_41" }
+  }'
+```
+
+Worth doing at signup rather than later. A renewal arrives months afterwards
+with no payer in the loop, and `subscription.renewed` carrying your own
+`account_id` is what saves you a lookup table keyed on ours.
+
 ## The authorization
 
 This is the part worth understanding properly.

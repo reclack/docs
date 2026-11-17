@@ -63,10 +63,12 @@ Reclack-Signature: t=1792447200,v1=5d41402abc4b2a76b9719d911017c592
   "data": {
     "id": "sub_4Kd9",
     "customer_id": "cus_7Fh2PqX9",
+    "payment": "pay_2Pb8xk9",
     "amount": "29.00",
     "currency": "USDC",
     "network": "base",
-    "next_charge_at": "2026-11-18T22:07:41Z"
+    "next_charge_at": "2026-11-18T22:07:41Z",
+    "metadata": { "account_id": "acct_41" }
   }
 }
 ```
@@ -75,6 +77,9 @@ Reclack-Signature: t=1792447200,v1=5d41402abc4b2a76b9719d911017c592
 | --- | --- |
 | `Reclack-Signature` | A timestamp and an HMAC over the body. See [Verifying](/webhooks/verifying). |
 | `Reclack-Event` | The event id, so you can deduplicate without parsing the body. |
+
+Every payload also carries the public ids of the objects it points at and the
+metadata you set yourself. See [Event types](/webhooks/events#what-every-payload-carries).
 
 ## Responding
 

@@ -12,12 +12,80 @@ contract: they are added to, never renamed.
   <img className="hidden dark:block" src="/images/event-types-dark.svg" alt="Payment, invoice, subscription and checkout events, each with a line saying when it fires." />
 </Frame>
 
+## What every payload carries
+
+Beyond the object's own fields, each event carries the public ids of the
+objects it points at and the metadata you set yourself. That is what lets a
+receiver file an event against its own records without reading anything back.
+
+| Field | On | Meaning |
+| --- | --- | --- |
+| `customer_id` | every event with a customer behind it | Who paid, or who is subscribed. |
+| `subscription_id` | payments, invoices, checkouts | The schedule this belongs to, when there is one. |
+| `invoice_id` | payments | The invoice a payment settled. |
+| `payment_link_id` | payments | The link a payer came through. |
+| `payment` | renewals, completed checkouts | The payment that settled it. |
+| `metadata` | checkouts, subscriptions, invoices | Your own keys on the object the event is about. |
+
+A field that does not apply is left out rather than sent empty, so testing for
+`subscription_id` is a safe way to tell a renewal from a one-off payment.
+
+```json
+{
+  "id": "evt_4Kd9ZmPq",
+  "type": "checkout.completed",
+  "created_at": "2026-10-18T22:07:41Z",
+  "data": {
+    "id": "chk_7Fh2PqX9Lm",
+    "status": "completed",
+    "payment": "pay_2Pb8xk9",
+    "customer_id": "cus_7Fh2PqX9",
+    "subscription_id": "sub_4Kd9",
+    "metadata": { "order_id": "A-1829" }
+  }
+}
+```
+
+<Note>
+`metadata` is your keys only. `fee_payer`, which every payable records whether
+or not you set it, is ours and does not travel here.
+</Note>
+
+## Metadata on a subscription
+
+A subscription inherits the metadata of the checkout or payment link that
+started it, and every renewal repeats it.
+
+This is the thread worth setting up front. A renewal arrives months later with
+no payer in the loop and no checkout left to read, so metadata you set at
+signup is the only thing on that event that your own system recognises.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/checkouts" \
+  -H "Api-Key: $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price_id": "price_7Fh2PqX9",
+    "metadata": { "account_id": "acct_41", "seat": "12" }
+  }'
+```
+
+Every `subscription.renewed` for the subscription that checkout creates carries
+that same `account_id` and `seat`.
+
 ## Payments
 
 | Type | Fires when | Act on it by |
 | --- | --- | --- |
 | `payment.succeeded` | A transaction confirmed onchain. | Marking the payment settled in your records. |
-| `payment.failed` | A collection attempt failed. | Noting it. Retries are already scheduled. |
+| `payment.failed` | A collection attempt failed for a reason that is the payer's or the chain's: a short balance, an exhausted allowance, a charge the chain refused, or an authorization that has ended. | Noting it. Retries are already scheduled, so most teams keep access on until the subscription pauses. |
+
+<Note>
+A collection Reclack held rather than attempted does not emit
+`payment.failed`. A screening hold, a transaction of ours that never left, or
+a relayer we could not use are all retried within the hour, and announcing
+them would have you cut off a customer for an outage of ours.
+</Note>
 
 ## Invoices
 
@@ -31,7 +99,7 @@ contract: they are added to, never renamed.
 | Type | Fires when | Act on it by |
 | --- | --- | --- |
 | `subscription.created` | A recurring checkout completed. | Granting access. |
-| `subscription.renewed` | A period collected and reconciled. | Extending access to the next period. |
+| `subscription.renewed` | A period collected and reconciled. | Extending access to `next_charge_at`, which the event carries. |
 | `subscription.cancelled` | The customer or you ended it. | Ending access when the period runs out. |
 
 ## Checkout
