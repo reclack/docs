@@ -24,6 +24,7 @@
             "pages": [
               "index",
               "quickstart",
+              "guides/platforms",
               "authentication",
               "environments",
               "networks",

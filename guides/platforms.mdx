@@ -1,0 +1,162 @@
+---
+title: "Platforms"
+description: "Take stablecoin payments on the store, site, community or automation tool you already run."
+---
+
+Reclack is an API and a hosted checkout, not a plugin for one storefront. A
+checkout reaches a payer in one of three ways, and all three work anywhere you
+can put a link, paste an embed or call an HTTP endpoint.
+
+<CardGroup cols={3}>
+  <Card title="Whop" img="/images/platforms/whop.svg" />
+  <Card title="Shopify" img="/images/platforms/shopify.svg" />
+  <Card title="WooCommerce" img="/images/platforms/woocommerce.svg" />
+  <Card title="WordPress" img="/images/platforms/wordpress.svg" />
+  <Card title="Webflow" img="/images/platforms/webflow.svg" />
+  <Card title="Framer" img="/images/platforms/framer.svg" />
+  <Card title="Ghost" img="/images/platforms/ghost.svg" />
+  <Card title="Substack" img="/images/platforms/substack.svg" />
+  <Card title="Telegram" img="/images/platforms/telegram.svg" />
+  <Card title="Discord" img="/images/platforms/discord.svg" />
+  <Card title="Zapier" img="/images/platforms/zapier.svg" />
+  <Card title="Make" img="/images/platforms/make.svg" />
+</CardGroup>
+
+<Note>
+  Names and marks belong to their owners. Listing a platform here says a
+  Reclack checkout works there. It does not say the two companies are
+  partnered, and nothing on this page is endorsed by them.
+</Note>
+
+## The three ways in
+
+Pick by how much of the payment you want to happen on your own page.
+
+### A link
+
+A [payment link](/guides/payment-links) is a URL you create once and reuse. It
+takes one-time or recurring payments, and it goes anywhere a URL goes: a
+product description, a button, a pinned message, an email.
+
+```bash
+curl -X POST "https://api.reclack.com/v1/payment-links" \
+  -H "Api-Key: $RECLACK_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium Research Access",
+    "type": "fixed",
+    "price_id": "price_7Fh2PqX9",
+    "collect_email": true
+  }'
+```
+
+This is the shortest path on a platform that owns its own checkout, or on one
+with no server of your own behind it.
+
+### An embed
+
+The [checkout widget](/sdks/checkout-widget) renders our checkout inside your
+page, in an iframe on our origin. The payer never leaves your site, and what
+they approve is drawn where the surrounding page cannot read or rewrite it.
+
+```html
+<div id="checkout"></div>
+<script src="https://js.reclack.com/widget.js"></script>
+<script>
+  Reclack().launch("chk_7Fh2PqX9Lm", {
+    mode: "inline",
+    container: "#checkout",
+  });
+</script>
+```
+
+Any platform with a custom code or HTML embed block can host this. Add your
+site's origin under **Developers** then **Embedding** in the dashboard first,
+or the frame will refuse to draw anything payable.
+
+### The API
+
+[Create a checkout session](/guides/checkout) from your own server when you
+want to decide the price, the customer and the metadata at the moment of
+purchase. This is what the Whop app does, and what any platform with webhooks
+or a server-side extension point can do.
+
+## Hearing the result
+
+Fulfilment belongs on the [webhook](/webhooks/overview), never on the payer's
+browser returning to your page. A payer closes the tab, loses signal, or pays
+from a phone while your page waits on a desktop.
+
+Every event carries the ids of what it points at and the `metadata` you set on
+the checkout, so the event alone says which order, member or subscriber it
+belongs to.
+
+```json
+{
+  "id": "evt_9KdP2mWq",
+  "type": "checkout.completed",
+  "data": {
+    "id": "chk_8Qd2Lm",
+    "customer_id": "cus_4Rb1Nt",
+    "subscription_id": "sub_2Yh7Kp",
+    "metadata": { "order_id": "ord_1982", "platform_user_id": "u_4471" }
+  }
+}
+```
+
+On a platform with an automation layer, point a webhook at it and let the
+platform do the rest: a Zap, a scenario or a workflow receives the same
+payload your own server would.
+
+<Tip>
+  Put whatever the platform calls its user on the checkout's `metadata`. It
+  comes back on the checkout's own event and on every event about the
+  subscription that checkout creates, which is the whole of what you need to
+  match a payment to an account.
+</Tip>
+
+## Gating access
+
+Most platform integrations end the same way: a payment lands, and somebody
+should get into something.
+
+<Steps>
+  <Step title="Open the checkout">
+    Create a session with the buyer's platform id in `metadata`, and send them
+    to `url`.
+  </Step>
+  <Step title="Grant on the event">
+    On `checkout.completed` or `subscription.created`, read the id back out of
+    `metadata` and grant access.
+  </Step>
+  <Step title="Extend on renewal">
+    `subscription.renewed` carries `next_charge_at`. Set access to expire then
+    rather than adding a month yourself: billing runs on fixed spans, and a
+    month added by hand drifts from what the payer authorized.
+  </Step>
+  <Step title="Revoke when it ends">
+    `subscription.cancelled` means the schedule stopped. Access runs to the
+    end of the period already paid for.
+  </Step>
+</Steps>
+
+## Whop
+
+Reclack ships an app for [Whop](https://whop.com). A community owner installs
+it, connects their Reclack workspace with an API key, and sells one-time or
+recurring stablecoin access from a panel in their own sidebar. Paying can also
+grant a membership on the creator's Whop product, so the buyer gets the
+Discord roles and course access attached to it.
+
+The app is the worked example of everything above: checkout from a server,
+metadata carrying the platform's user id, and fulfilment on the webhook.
+
+## Anywhere else
+
+Nothing on this page is a closed list. If a platform lets you put a URL in
+front of a customer, it works today. If it lets you run code when something
+happens, it works better.
+
+Start with the [quickstart](/quickstart), or read how
+[subscriptions](/guides/subscriptions) are authorized if recurring is what you
+are after.
