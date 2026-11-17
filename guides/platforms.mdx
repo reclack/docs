@@ -30,7 +30,7 @@ can put a link, paste an embed or call an HTTP endpoint.
 
 ## The three ways in
 
-Pick by how much of the payment you want to happen on your own page.
+Pick by how much of the payment you want happening on your own page.
 
 ### A link
 
@@ -50,14 +50,15 @@ curl -X POST "https://api.reclack.com/v1/payment-links" \
   }'
 ```
 
-This is the shortest path on a platform that owns its own checkout, or on one
-with no server of your own behind it.
+Use a link when the platform runs its own checkout and will not let you
+replace it, or when there is no server of yours behind the page at all.
 
 ### An embed
 
-The [checkout widget](/sdks/checkout-widget) renders our checkout inside your
-page, in an iframe on our origin. The payer never leaves your site, and what
-they approve is drawn where the surrounding page cannot read or rewrite it.
+The [checkout widget](/sdks/checkout-widget) puts our checkout inside your own
+page, so the buyer never leaves your site. It runs in a frame served from our
+domain, which means the amount and the address they approve cannot be read or
+changed by anything else on the page.
 
 ```html
 <div id="checkout"></div>
@@ -70,26 +71,30 @@ they approve is drawn where the surrounding page cannot read or rewrite it.
 </script>
 ```
 
-Any platform with a custom code or HTML embed block can host this. Add your
-site's origin under **Developers** then **Embedding** in the dashboard first,
-or the frame will refuse to draw anything payable.
+Any platform with a custom code or HTML block can host this. One thing to do
+first: add your site's address under **Developers** then **Embedding** in the
+dashboard. Until you do, the frame loads but refuses to show anything payable.
 
 ### The API
 
-[Create a checkout session](/guides/checkout) from your own server when you
-want to decide the price, the customer and the metadata at the moment of
-purchase. This is what the Whop app does, and what any platform with webhooks
-or a server-side extension point can do.
+[Create a checkout session](/guides/checkout) from your own server when the
+price, the customer or the reference you attach is only known at the moment
+somebody buys. This is what our Whop app does, and what any platform that lets
+you run code on a purchase can do.
 
-## Hearing the result
+## Knowing when a payment lands
 
-Fulfilment belongs on the [webhook](/webhooks/overview), never on the payer's
-browser returning to your page. A payer closes the tab, loses signal, or pays
-from a phone while your page waits on a desktop.
+Give the customer what they bought when the [webhook](/webhooks/overview)
+arrives, not when their browser comes back to your page.
 
-Every event carries the ids of what it points at and the `metadata` you set on
-the checkout, so the event alone says which order, member or subscriber it
-belongs to.
+The browser often does not come back. People close the tab as soon as their
+wallet says the payment went through, lose signal on the way, or pay on a
+phone while your page sits open on a laptop. The webhook arrives anyway, and
+we keep retrying it until your server answers.
+
+Every event names the things it points at and repeats the `metadata` you set
+on the checkout, so one event tells you which order, member or subscriber it
+belongs to without a second API call.
 
 ```json
 {
@@ -104,39 +109,41 @@ belongs to.
 }
 ```
 
-On a platform with an automation layer, point a webhook at it and let the
-platform do the rest: a Zap, a scenario or a workflow receives the same
-payload your own server would.
+If the platform has an automation layer, point the webhook straight at it. A
+Zap, a scenario or a workflow receives exactly the payload your own server
+would, so you can grant access without running a server at all.
 
 <Tip>
-  Put whatever the platform calls its user on the checkout's `metadata`. It
-  comes back on the checkout's own event and on every event about the
-  subscription that checkout creates, which is the whole of what you need to
-  match a payment to an account.
+  Put the platform's own id for the buyer on the checkout's `metadata`. You
+  get it back on that checkout's event and on every later event about the
+  subscription it created, which is all you need to match a renewal months
+  from now to the right account.
 </Tip>
 
-## Gating access
+## Letting people in, and out again
 
-Most platform integrations end the same way: a payment lands, and somebody
-should get into something.
+Nearly every platform integration ends the same way: money arrives, and
+somebody should now be able to get at something. Four events cover the whole
+life of that.
 
 <Steps>
-  <Step title="Open the checkout">
-    Create a session with the buyer's platform id in `metadata`, and send them
-    to `url`.
+  <Step title="Send them to pay">
+    Create the checkout with the platform's id for the buyer in `metadata`,
+    then send them to the `url` it returns.
   </Step>
-  <Step title="Grant on the event">
-    On `checkout.completed` or `subscription.created`, read the id back out of
-    `metadata` and grant access.
+  <Step title="Let them in">
+    When `checkout.completed` or `subscription.created` arrives, read that id
+    back out of `metadata` and grant access to whoever it names.
   </Step>
-  <Step title="Extend on renewal">
-    `subscription.renewed` carries `next_charge_at`. Set access to expire then
-    rather than adding a month yourself: billing runs on fixed spans, and a
-    month added by hand drifts from what the payer authorized.
+  <Step title="Keep them in while they keep paying">
+    `subscription.renewed` tells you the next charge date in `next_charge_at`.
+    Set access to run out on that date. Do not add a month yourself: billing
+    runs on fixed spans rather than calendar months, so a date you work out by
+    hand slowly drifts away from the one the buyer agreed to.
   </Step>
-  <Step title="Revoke when it ends">
-    `subscription.cancelled` means the schedule stopped. Access runs to the
-    end of the period already paid for.
+  <Step title="Stop when they stop">
+    `subscription.cancelled` means no further charges are coming. They keep
+    access until the period they already paid for runs out.
   </Step>
 </Steps>
 
