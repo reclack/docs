@@ -1,12 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 126" width="480" height="126" role="img" aria-label="Substack">
-	<defs>
-		<radialGradient id="glow-substack" cx="50%" cy="50%" r="50%">
-			<stop offset="0%" stop-color="#533afd" stop-opacity="0.16"/>
-			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
-		</radialGradient>
-	</defs>
-	<ellipse cx="240" cy="63" rx="150" ry="52" fill="url(#glow-substack)"/>
-	<g transform="translate(208.80,31.80) scale(2.6)" fill="#6b6b7b">
+	<g transform="translate(198.00,21.00) scale(3.5000)" fill="#FF6719">
 		<path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
 	</g>
 </svg>

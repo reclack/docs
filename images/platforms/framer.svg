@@ -1,12 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 126" width="480" height="126" role="img" aria-label="Framer">
-	<defs>
-		<radialGradient id="glow-framer" cx="50%" cy="50%" r="50%">
-			<stop offset="0%" stop-color="#533afd" stop-opacity="0.16"/>
-			<stop offset="100%" stop-color="#533afd" stop-opacity="0"/>
-		</radialGradient>
-	</defs>
-	<ellipse cx="240" cy="63" rx="150" ry="52" fill="url(#glow-framer)"/>
-	<g transform="translate(208.80,31.80) scale(2.6)" fill="#6b6b7b">
+	<g transform="translate(198.00,21.00) scale(3.5000)" fill="#0055FF">
 		<path d="M4 0h16v8h-8zM4 8h8l8 8H4zM4 16h8v8z"/>
 	</g>
 </svg>
